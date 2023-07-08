@@ -179,6 +179,27 @@ int main(int argc, char** argv) {
             }
         }
 
+        // 当前图片的大小不一定能整除 kernel 的个数
+        // 若不能整除，将最后一组结果中，输入为零的那些分块对应的结果全部跳过
+        // int remain = (blk_num_height * blk_num_width) % kernel_num;
+
+        // if (remain != 0) {
+
+        //     for (int i = 1; i <= kernel_num - remain; i++) {
+
+        //         // 读出当前分块的数据
+        //         sprintf(file, "../Emulation-AIE/aiesimulator_output/data/output%d.txt", remain + i);
+        //         if ((fin = fopen(file, "r")) == NULL) {
+        //             printf("image file can not find\n");
+        //             exit(0);
+        //         }
+        //         read_to_mem(blk_out, kernel_width * kernel_height, file);
+
+        //         fclose(fin);
+        //     }
+
+        // }
+
         // 读出当前文件的参考结果
         if ((fin = fopen("./ref.txt", "r")) == NULL) {
             printf("image file can not find\n");
