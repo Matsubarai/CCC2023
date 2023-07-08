@@ -72,16 +72,19 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 ## 系统测试
 
 复现步骤：
-- 
-- 
+- 213213
+
+输入图片张数：2
+输入图片宽度：3840
+输入图片高度：2160
+注意这里的图片默认只有一维，若需处理一张正常的RGB图片，需要手动将其展成三张图片
+若需增加输入图片的个数，需要修改[生成数据](https://github.com/DongDongZZD/CCC2023/blob/main/data/generate_data.cpp)、[拼接数据](https://github.com/DongDongZZD/CCC2023/blob/main/data/sticker.cpp)代码中图片个数的参数，并且增加 AIE graph 启动的次数；若想改变图片大小，需要对生成数据、拼接数据代码中的参数进行修改，AIE 中 graph 启动次数也需要进行响应的调整
 
 ### 正确性验证
 
-正确性的步骤可通过 [jupter 文件](https://github.com/DongDongZZD/CCC2023)复现
-
 本实验首先用简单的循环计算出输入图片对应的参考卷积结果，然后与 AIE 的计算结果（输入图片--->分块--->调用AIE仿真--->拼接结果）进行对比。
 
-当输入两张 4K 图片时（若增加输入图片的个数，需要修改生成数据、拼接数据代码中图片个数的参数，并且增加 AIE graph 启动的次数；若想改变图片大小，需要对生成数据、拼接数据代码中的参数进行修改，AIE 中 graph 启动次数也需要进行响应的调整），可以看到 AIE 的计算结果与软件计算出的参考结果一致
+当输入两张 4K 图片时，可以看到 AIE 的计算结果与软件计算出的参考结果一致
 
 ![图14](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/14.png "图14 正确性验证")
 
