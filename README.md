@@ -71,6 +71,10 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 
 ## 系统测试
 
+复现步骤：
+- 
+- 
+
 ### 正确性验证
 
 正确性的步骤可通过 [jupter 文件](https://github.com/DongDongZZD/CCC2023)复现
