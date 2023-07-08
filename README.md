@@ -4,7 +4,7 @@
 Filter2D
 
 ## 摘要
-本实验总的设计思路是让每个AIE复用[Xilinx官方的filter2D API](https://github.com/DongDongZZD/CCC2023/blob/main/src/xf_filter2d_aie.hpp)，使得每个AIE能够对固定大小的图片进行卷积操作。然后利用PL端对输入的任意大小的图片进行分块操作，分块后的矩阵大小与每个AIE能处理的图片大小相同。之后调用一组AIE循环对这些分块数据进行处理，最后再利用PL端将计算好的分块数据进行拼接操即可。这里输入图片的大小需不小于每个AIE能处理的图片大小，另外重复进行上述过程即可处理多张图片。
+本实验总的设计思路是让每个AIE复用[Xilinx官方的filter2D API](https://github.com/DongDongZZD/CCC2023/blob/main/src/xf_filter2d_aie.hpp)，使得每个AIE能够对固定大小的图片进行卷积操作。然后利用PL端对输入的任意大小的图片进行分块操作，分块后的矩阵大小与每个AIE能处理的图片大小相同。之后循环调用一组 AIE 对这些分块数据进行处理，最后再利用PL端将计算好的分块数据进行拼接操即可。这里输入图片的大小需不小于每个AIE能处理的图片大小，另外重复进行上述过程即可处理多张图片。
 
 但由于host端代码始终运行有误等若干原因，本实验仅进行了仿真。即需手动调用[分块操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/generate_data.cpp)代码对图片进行分块，得到若干输入文件，然后再通过仿真调用AIE得到若干输出文件，最后运行[拼接操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/sticker.cpp)代码得到卷积后的结果。
 
