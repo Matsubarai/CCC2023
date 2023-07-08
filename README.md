@@ -6,7 +6,7 @@ Filter2D
 ## 摘要
 本实验总的设计思路是让每个AIE复用[Xilinx官方的filter2D API](https://github.com/DongDongZZD/CCC2023/blob/main/src/xf_filter2d_aie.hpp)，使得每个AIE能够对固定大小的图片进行卷积操作。然后利用PL端对输入的任意大小的图片进行分块操作，分块后的矩阵大小与每个AIE能处理的图片大小相同。之后循环调用一组 AIE 对这些分块数据进行处理，最后再利用PL端将计算好的分块数据进行拼接操即可。这里输入图片的大小需不小于每个AIE能处理的图片大小，另外重复进行上述过程即可处理多张图片。
 
-但由于host端代码始终运行有误等若干原因，本实验仅进行了仿真。即需手动调用[分块操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/generate_data.cpp)代码对图片进行分块，得到若干输入文件，然后再通过仿真调用AIE得到若干输出文件，最后运行[拼接操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/sticker.cpp)代码得到卷积后的结果。
+但由于host端代码始终运行有误等原因，本实验仅进行了仿真。即需手动调用[分块操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/generate_data.cpp)代码对图片进行分块，得到若干输入文件，然后再通过仿真调用AIE得到若干输出文件，最后运行[拼接操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/sticker.cpp)代码得到卷积后的结果。
 
 ## 系统设计
 
@@ -64,20 +64,22 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 
 本实验定义了 32 个 kernel，每个 kernel 可以处理 64*32 大小的图片。根据仿真结果，总共消耗了 ** 个 AIE（在资源够用的情况下，可以增加 kernel 的个数，提高系统的吞吐量）
 
-当输入的图片较大时（例如 4K 图片，3840 * 2160），可以将分块后得到的数据按照顺序（从左至右，从上至下）以每32个分块为一组进行分组。每个组内将分块按照顺序依次分给 32 个 kernel 进行计算，组内第 i 个分块的计算结果通过追加写写到 “outputi.txt” 文件中即可。当输入图片的总分块数量不能整除 kernel 个数时，向最后一个组添加若干全零的输入文件即可。总的来说，通过多次启动 graph 便可达到对连续输入的若干较大图片卷积运算的目的
+当输入的图片较大时（例如 4K 图片，3840 * 2160），可以将分块后得到的数据按照顺序（从左至右，从上至下）以每32个分块为一组进行分组。每个组内将分块按照顺序依次分给 32 个 kernel 进行计算，组内第 i 个分块的计算结果通过追加写写到 “outputi.txt” 文件中即可。当输入图片的总分块数量不能整除 kernel 个数时，向最后一个组添加若干全零的输入文件即可。总的来说，通过多次启动 graph 便可达到对连续输入的若干较大图片进行卷积运算的目的
 
 [Graph 代码](https://github.com/DongDongZZD/CCC2023/blob/main/src/graph.cpp)只是简单的将上述分块好的输入文件传输给每个 kernel，然后将每个 kernel 的输出分别存到各自的 output 文件中。仿真得到的 graph 示意图如下所示
 ![图13](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/13.png "图13 32个 kernel 对应的 graph 示意图")
 
 ## 系统测试
 
-系统测试的具体步骤可通过 [jupter 文件](https://github.com/DongDongZZD/CCC2023)复现
-
 ### 正确性验证
+
+正确性的步骤可通过 [jupter 文件](https://github.com/DongDongZZD/CCC2023)复现
 
 本实验首先用简单的循环计算出输入图片对应的参考卷积结果，然后与 AIE 的计算结果（输入图片--->分块--->调用AIE仿真--->拼接结果）进行对比。
 
-当输入两张 4K 图片时，可以看到 AIE 的计算结果与软件计算出的参考结果一致
+当输入两张 4K 图片时（若增加输入图片的个数，需要修改生成数据、拼接数据代码中图片个数的参数，并且增加 AIE graph 启动的次数；若想改变图片大小，需要对生成数据、拼接数据代码中的参数进行修改，AIE 中 graph 启动次数也需要进行响应的调整），可以看到 AIE 的计算结果与软件计算出的参考结果一致
+
+![图14](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/14.png "图14 正确性验证")
 
 ### 系统性能分析
 
