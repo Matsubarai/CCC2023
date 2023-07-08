@@ -4,22 +4,21 @@
 Filter2D
 
 ## 摘要
-本实验总的设计思路是让每个AIE复用[Xilinx官方的filter2D API](https://github.com/Xilinx/Vitis_Libraries/blob/2022.2/vision/L1/include/aie/imgproc/xf_filter2d_16b_aie.hpp)，使得每个AIE能够对固定大小的图片进行卷积操作。然后利用PL端对输入的任意大小的图片进行[分块操作](https://github.com/DongDongZZD/CCC2023)，分块后的矩阵大小与每个AIE能处理的图片大小相同。之后调用一组AIE循环对这些分块数据进行处理，最后再利用PL端将计算好的分块数据进行[拼接操作](https://github.com/DongDongZZD/CCC2023)即可。这里输入图片的大小需不小于每个AIE能处理的图片大小，另外重复进行上述过程即可处理多张图片。
-
-但由于host端代码始终运行有误等若干原因，本实验仅进行了仿真。即需手动调用[分块操作](https://github.com/DongDongZZD/CCC2023)代码对图片进行分块，得到若干输入文件，然后再通过仿真调用AIE得到若干输出文件，最后运行[拼接操作](https://github.com/DongDongZZD/CCC2023)代码得到卷积后的结果。
+本实验总的设计思路是让每个AIE复用[Xilinx官方的filter2D API](https://github.com/DongDongZZD/CCC2023/blob/main/src/xf_filter2d_aie.hpp)，使得每个AIE能够对固定大小的图片进行卷积操作。然后利用PL端对输入的任意大小的图片进行分块操作，分块后的矩阵大小与每个AIE能处理的图片大小相同。之后调用一组AIE循环对这些分块数据进行处理，最后再利用PL端将计算好的分块数据进行拼接操即可。这里输入图片的大小需不小于每个AIE能处理的图片大小，另外重复进行上述过程即可处理多张图片。
+但由于host端代码始终运行有误等若干原因，本实验仅进行了仿真。即需手动调用[分块操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/generate_data.cpp)代码对图片进行分块，得到若干输入文件，然后再通过仿真调用AIE得到若干输出文件，最后运行[拼接操作](https://github.com/DongDongZZD/CCC2023/blob/main/data/sticker.cpp)代码得到卷积后的结果。
 
 ## 系统设计
 
 ### AIE代码
 
-本设计的AIE代码直接利用了[已有API](https://github.com/Xilinx/Vitis_Libraries/blob/2022.2/vision/L1/include/aie/imgproc/xf_filter2d_16b_aie.hpp)，细节不做过多赘述。
-唯一的区别在于，为了能处理64*64的矩阵，需要对代码中矩阵大小的参数进行相应修改。
+本设计的AIE代码直接利用了[已有API](https://github.com/DongDongZZD/CCC2023/blob/main/src/xf_filter2d_aie.hpp)，细节不做过多赘述。
+唯一的区别在于，将代码中ALE处理的矩阵大小修改为 64 * 32
 
 ### 对数据进行分块以及拼接
 
 因为未找到可适配x86平台的矩阵 tile & sticker API，本实验对 tile & sticker 代码进行了复现
 
-需注意这里的 padding 操作采取了[filter2D API](https://github.com/Xilinx/Vitis_Libraries/blob/2022.2/vision/L1/include/aie/imgproc/xf_filter2d_16b_aie.hpp)中的做法，即：
+需注意这里的 padding 操作采取了[filter2D API](https://github.com/DongDongZZD/CCC2023/blob/main/src/xf_filter2d_aie.hpp)中的做法，即：
 - padding 后矩阵四个角的数据与原矩阵四个角的数据相同
 - padding 后矩阵第一列/行的数据与原矩阵第一列/行的数据相同
 - padding 后矩阵最后一列/行的数据与原矩阵最后一列/行的数据相同
@@ -27,7 +26,7 @@ Filter2D
 另外卷积核的步长固定为 1
 
 #### 分块
-[分块](https://github.com/Xilinx/Vitis_Libraries/blob/2022.2/vision/L1/include/aie/imgproc/xf_filter2d_16b_aie.hp)的重点是需要处理相邻分块矩阵数据的 overlap，根据 padding 策略和卷积核的步长，这里的 overlap 策略为：
+分块的重点是需要处理相邻分块矩阵数据的 overlap，根据 padding 策略和卷积核的步长，这里的 overlap 策略为：
 - 左右两个分块矩阵需要重叠左侧矩阵的最后两列数据，如图1所示
 ![图1](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/1.png "图1 左右分块矩阵的 overlap")
 - 上下两个分块矩阵需要重叠上方矩阵的最后两行数据，如图2所示
@@ -60,10 +59,37 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 ![图12](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/12.png "图12 第一行分块的完整历程")
 
 
-
-
 ### Graph
+
+本实验定义了 32 个 kernel，每个 kernel 可以处理 64*32 大小的图片。根据仿真结果，总共消耗了 ** 个 AIE（在资源够用的情况下，可以增加 kernel 的个数，提高系统的吞吐量）
+
+当输入的图片较大时（例如 4K 图片，3840 * 2160），可以将分块后得到的数据按照顺序（从左至右，从上至下）以每32个分块为一组进行分组。每个组内将分块按照顺序依次分给 32 个 kernel 进行计算，组内第 i 个分块的计算结果通过追加写写到 “outputi.txt” 文件中即可。当输入图片的总分块数量不能整除 kernel 个数时，向最后一个组添加若干全零的输入文件即可。总的来说，通过多次启动 graph 便可达到对连续输入的若干较大图片卷积运算的目的
+
+[Graph 代码](https://github.com/DongDongZZD/CCC2023/blob/main/src/graph.cpp)只是简单的将上述分块好的输入文件传输给每个 kernel，然后将每个 kernel 的输出分别存到各自的 output 文件中。仿真得到的 graph 示意图如下所示
+![图13](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/13.png "图13 32个 kernel 对应的 graph 示意图")
 
 ## 系统测试
 
-## 结论
+系统测试的具体步骤可通过 [jupter 文件](https://github.com/DongDongZZD/CCC2023)复现
+
+### 正确性验证
+
+本实验首先用简单的循环计算出输入图片对应的参考卷积结果，然后与 AIE 的计算结果（输入图片--->分块--->调用AIE仿真--->拼接结果）进行对比。
+
+当输入两张 4K 图片时，可以看到 AIE 的计算结果与软件计算出的参考结果一致
+
+### 系统性能分析
+
+这里的分块和拼接操作均由软件端完成，即需要给每个 AIE 提前准备好对应的输入文件，并且利用软件端对每个 AIE 的输出文件做进一步处理。
+
+故此小节的性能仅仅通过仿真结果分析在输入文件准备好且不需要对输出文件进行拼接时，AIE 的吞吐量、空间利用率和能耗。
+
+
+
+注意本实验只定义了 32 个kernel，总共利用了 ** 个AIE，在带宽、AIE个数允许的条件下可以增大 kernel 的个数来提升系统的性能
+
+
+## 总结展望
+
+由于对开发流程和开发工具的不熟练，本次实验未能调试完毕 host 端的代码，最终只能通过仿真模拟 AIE 的运算。未来可以将分块和拼接操作移植到 PL 端运行并且进一步修改 host 端代码。
+
