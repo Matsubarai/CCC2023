@@ -74,7 +74,12 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 ## 系统测试
 
 复现步骤：
-- 213213
+```
+# Build project
+make all
+# Run AIE Emulation
+make aieemu
+```
 
 输入图片张数：2
 输入图片宽度：3840
