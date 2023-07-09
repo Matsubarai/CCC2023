@@ -104,9 +104,17 @@ make aieemu
 
 这里的分块和拼接操作均由软件端完成，即需要给每个 AIE 提前准备好对应的输入文件，并且利用软件端对每个 AIE 的输出文件做进一步处理。
 
-故此小节的性能仅仅通过仿真结果分析在输入文件准备好且不需要对输出文件进行拼接时，AIE 的吞吐量、空间利用率和能耗。
+故此小节的性能仅仅通过仿真结果分析在输入文件准备好且不需要对输出文件进行拼接时 AIE 的吞吐量
 
-trace 分析（增加数据复用）
+处理两张一维的4K图片时，输入的数据总量 =  总共花费的时钟周期 =  时钟频率 = 故吞吐量 = 
+
+![图16](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/16.png "图16 总共花费的时钟周期")
+
+![图17](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/16.png "图17 时钟频率")
+
+下图截取至仿真的 trace 分析，不难看出 AIE 的绝大部分运行时间都花费在了数据传输上，未来可以从增加数据复用的角度出发，优化 AIE 的设计
+
+![图18](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/16.png "图18 trace分析")
 
 注意本实验只定义了 32 个kernel，总共利用了 57 个AIE，在带宽、AIE个数允许的条件下可以增大 kernel 的个数来提升系统的性能
 
