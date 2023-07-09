@@ -89,7 +89,6 @@ void write_to_file(int array[], int size, const char filename[]) {
         cout << "cannot open " << filename << endl;
         exit(0);
     }
-    ioFile.seekg(0, ios::end);
     for (int i = 0; i < size; i++) {
         ioFile << array[i] << endl;
     }
@@ -135,7 +134,7 @@ int main(int argc, char** argv) {
 
         // 这里为了方便，直接通过代码来生成输入图片
         for (int i = 0; i < img_height * img_width; i++) {
-            img[i] = i;
+            img[i] = rand() % 100;
         }
 
         // 采用 readme 中的 padding 方式，对整张图片进行计算，得到参考结果
@@ -210,7 +209,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    printf("graph run time:%d", ceil(  (float)(blk_num_height * blk_num_width)   /   kernel_num  ) * img_num);
+    printf("graph run time:%d\n", (int)ceil(  (float)(blk_num_height * blk_num_width)   /   kernel_num  ) * img_num);
 	
 	delete [] img;
 	delete [] img_out_ref;
