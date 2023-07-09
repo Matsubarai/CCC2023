@@ -195,7 +195,7 @@ connect<> net63(filter_graph.out32, platform.sink[31]);
 int main(int argc, char** argv) {
 
     filter_graph.init();
-    filter_graph.run(1);
+    filter_graph.run(70);
     filter_graph.end();
     return 0;
 }
