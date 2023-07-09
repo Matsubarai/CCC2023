@@ -29,8 +29,10 @@ Filter2D
 #### 分块
 分块的重点是需要处理相邻分块矩阵数据的 overlap，根据 padding 策略和卷积核的步长，这里的 overlap 策略为：
 - 左右两个分块矩阵需要重叠左侧矩阵的最后两列数据，如图1所示
+
 ![图1](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/1.png "图1 左右分块矩阵的 overlap")
 - 上下两个分块矩阵需要重叠上方矩阵的最后两行数据，如图2所示
+
 ![图2](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/2.png "图2 上下分块矩阵的 overlap")
 
 完整图片的分块示意图如下，截取每个分块数据的关键就在于获得这个分块相对于原点的偏移
