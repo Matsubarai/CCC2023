@@ -66,10 +66,11 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 
 本实验定义了 32 个 kernel，每个 kernel 可以处理 64*32 大小的图片。根据仿真结果，总共消耗了 57 个 AIE（在资源够用的情况下，可以增加 kernel 的个数，提高系统的吞吐量）
 
-当输入的图片较大时（例如 4K 图片，3840 * 2160），可以将分块后得到的数据按照顺序（从左至右，从上至下）以每32个分块为一组进行分组。每个组内将分块按照顺序依次分给 32 个 kernel 进行计算，组内第 i 个分块的计算结果通过追加写写到 “outputi.txt” 文件中。当输入图片的总分块数量不能整除 kernel 个数时，向最后一个组添加若干全零的输入文件即可。总的来说，通过多次启动 graph 便可达到对连续输入的若干较大图片进行卷积运算的目的
+当输入的图片较大时（例如 4K 图片，3840 * 2160），可以将分块后得到的数据按照顺序（从左至右，从上至下）以每32个分块为一组进行分组。每个组内将分块按照顺序依次分给 32 个 kernel 进行计算，组内第 i 个分块的计算结果通过追加写写到 “outputi.txt” 文件中。当输入图片的总分块数量不能整除 kernel 个数时，向最后一个组添加若干全零的输入文件即可。总的来说，通过多次启动 graph 便可达到对连续输入的若干较大图片进行卷积运算的目的。单张图片的运算流程如下图所示
+![图13](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/13.png "图13 单张图片的运算流程")
 
 [Graph 代码](https://github.com/DongDongZZD/CCC2023/blob/main/src/graph.cpp)只是简单的将上述分块好的输入文件传输给每个 kernel，然后将每个 kernel 的输出分别存到各自的 output 文件中。仿真得到的 graph 示意图如下所示
-![图13](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/13.png "图13 32个 kernel 对应的 graph 示意图")
+![图14](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/14.png "图14 32个 kernel 对应的 graph 示意图")
 
 ## 系统测试
 
@@ -97,7 +98,7 @@ make aieemu
 
 当输入两张 4K 图片时，可以看到 AIE 的计算结果与软件计算出的参考结果一致
 
-![图14](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/14.png "图14 正确性验证")
+![图15](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/15.png "图15 正确性验证")
 
 ### 系统性能分析
 
