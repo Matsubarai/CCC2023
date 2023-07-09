@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cstring>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
@@ -115,7 +116,14 @@ void read_to_mem(int data[], int size, const char filename[], int file_offset) {
         exit(0);
     }
 
-    ioFile.seekg(file_offset, ios::beg);
+    for (int i = 0; i < file_offset; i++) {
+        string num;
+        getline(ioFile, num);
+        while (num.c_str()[0] == 'T')
+            getline(ioFile, num);
+    }
+
+
 	for (int i = 0; i < size; i++) {
 		std::string num;
 		getline(ioFile, num);
@@ -177,8 +185,8 @@ int main(int argc, char** argv) {
                 
                 // 读出当前分块的数据
                 sprintf(file, "../Emulation-AIE/aiesimulator_output/data/output%d.txt", (i * blk_num_width + j) % kernel_num + 1);
-                file_offset = 2 * ((i * blk_num_width + j) / kernel_num) * kernel_width * kernel_height + 
-                                n * 2 * ceil((float)(blk_num_height * blk_num_width) / kernel_num) * kernel_width * kernel_height;
+                file_offset = ((i * blk_num_width + j) / kernel_num) * kernel_width * kernel_height + 
+                                n * ceil((float)(blk_num_height * blk_num_width) / kernel_num) * kernel_width * kernel_height;
                 read_to_mem(blk_out, kernel_width * kernel_height, file, file_offset);
 
                 // 将当前分块结果拼接到最终输出中
