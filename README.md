@@ -110,11 +110,11 @@ make aieemu
 
 ![图16](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/16.png "图16 总共花费的时钟周期")
 
-![图17](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/16.png "图17 时钟频率")
+![图17](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/17.png "图17 时钟频率")
 
 下图截取至仿真的 trace 分析，不难看出 AIE 的绝大部分运行时间都花费在了数据传输上，未来可以从增加数据复用的角度出发，优化 AIE 的设计
 
-![图18](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/16.png "图18 trace分析")
+![图18](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/18.png "图18 trace分析")
 
 注意本实验只定义了 32 个kernel，总共利用了 57 个AIE，在带宽、AIE个数允许的条件下可以增大 kernel 的个数来提升系统的性能
 
