@@ -29,11 +29,8 @@ Filter2D
 #### 分块
 分块的重点是需要处理相邻分块矩阵数据的 overlap，根据 padding 策略和卷积核的步长，这里的 overlap 策略为：
 - 左右两个分块矩阵需要重叠左侧矩阵的最后两列数据，如图1所示
-
 ![图1](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/1.png "图1 左右分块矩阵的 overlap")
-
 - 上下两个分块矩阵需要重叠上方矩阵的最后两行数据，如图2所示
-
 ![图2](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/2.png "图2 上下分块矩阵的 overlap")
 
 完整图片的分块示意图如下，截取每个分块数据的关键就在于获得这个分块相对于原点的偏移
@@ -78,13 +75,9 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 - 213213
 
 输入图片张数：2
-
 输入图片宽度：3840
-
 输入图片高度：2160
-
 注意这里的图片默认只有一维，若需处理一张正常的RGB图片，需要手动将其展成三张图片
-
 若需增加输入图片的个数，需要修改[生成数据](https://github.com/DongDongZZD/CCC2023/blob/main/data/generate_data.cpp)、[拼接数据](https://github.com/DongDongZZD/CCC2023/blob/main/data/sticker.cpp)代码中图片个数的参数，并且增加 AIE graph 启动的次数；若想改变图片大小，需要对生成数据、拼接数据代码中的参数进行修改，AIE 中 graph 启动次数也需要进行响应的调整
 
 ### 正确性验证
@@ -108,5 +101,7 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 
 ## 总结展望
 
-由于对开发流程和开发工具的不熟练，本次实验未能调试完毕 host 端的代码，最终只能通过仿真模拟 AIE 的运算。未来可以将分块和拼接操作移植到 PL 端运行并且进一步修改 host 端代码。
+总的来说，本实验利用仿真软件可实现对任意张数任意大小（图片为一维，大小不小于单个AIE kernel 能处理的图片大小）的图片进行filter2D计算
+
+由于对开发流程和开发工具的不熟练，本次实验未能调试完毕 host 端的代码。未来可以将分块和拼接操作移植到 PL 端并且进一步修改 host 端代码。
 
