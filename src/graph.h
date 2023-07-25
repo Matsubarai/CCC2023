@@ -18,7 +18,7 @@
 #define __GRAPH_H__
 
 #include <adf.h>
-#include "kernels.h"
+#include "aie_kernels.h"
 //#include "gauss2_stitcher.h"
 //#include "gauss2_tiler.h"
 
@@ -251,38 +251,38 @@ class two_node_pipeline : public graph {
 
         // Pull the source from previous lab
         // source(tiler)    = "kernels/gauss2_tiler.cpp";
-        source(gauss1) = "xf_filter2d.cc";
-        source(gauss2) = "xf_filter2d.cc";
-        source(gauss3) = "xf_filter2d.cc";
-        source(gauss4) = "xf_filter2d.cc";
-        source(gauss5) = "xf_filter2d.cc";
-        source(gauss6) = "xf_filter2d.cc";
-        source(gauss7) = "xf_filter2d.cc";
-        source(gauss8) = "xf_filter2d.cc";
-        source(gauss9) = "xf_filter2d.cc";
-        source(gauss10) = "xf_filter2d.cc";
-        source(gauss11) = "xf_filter2d.cc";
-        source(gauss12) = "xf_filter2d.cc";
-        source(gauss13) = "xf_filter2d.cc";
-        source(gauss14) = "xf_filter2d.cc";
-        source(gauss15) = "xf_filter2d.cc";
-        source(gauss16) = "xf_filter2d.cc";
-        source(gauss17) = "xf_filter2d.cc";
-        source(gauss18) = "xf_filter2d.cc";
-        source(gauss19) = "xf_filter2d.cc";
-        source(gauss20) = "xf_filter2d.cc";
-        source(gauss21) = "xf_filter2d.cc";
-        source(gauss22) = "xf_filter2d.cc";
-        source(gauss23) = "xf_filter2d.cc";
-        source(gauss24) = "xf_filter2d.cc";
-        source(gauss25) = "xf_filter2d.cc";
-        source(gauss26) = "xf_filter2d.cc";
-        source(gauss27) = "xf_filter2d.cc";
-        source(gauss28) = "xf_filter2d.cc";
-        source(gauss29) = "xf_filter2d.cc";
-        source(gauss30) = "xf_filter2d.cc";
-        source(gauss31) = "xf_filter2d.cc";
-        source(gauss32) = "xf_filter2d.cc";
+        source(gauss1) = "xf_filter2d.cpp";
+        source(gauss2) = "xf_filter2d.cpp";
+        source(gauss3) = "xf_filter2d.cpp";
+        source(gauss4) = "xf_filter2d.cpp";
+        source(gauss5) = "xf_filter2d.cpp";
+        source(gauss6) = "xf_filter2d.cpp";
+        source(gauss7) = "xf_filter2d.cpp";
+        source(gauss8) = "xf_filter2d.cpp";
+        source(gauss9) = "xf_filter2d.cpp";
+        source(gauss10) = "xf_filter2d.cpp";
+        source(gauss11) = "xf_filter2d.cpp";
+        source(gauss12) = "xf_filter2d.cpp";
+        source(gauss13) = "xf_filter2d.cpp";
+        source(gauss14) = "xf_filter2d.cpp";
+        source(gauss15) = "xf_filter2d.cpp";
+        source(gauss16) = "xf_filter2d.cpp";
+        source(gauss17) = "xf_filter2d.cpp";
+        source(gauss18) = "xf_filter2d.cpp";
+        source(gauss19) = "xf_filter2d.cpp";
+        source(gauss20) = "xf_filter2d.cpp";
+        source(gauss21) = "xf_filter2d.cpp";
+        source(gauss22) = "xf_filter2d.cpp";
+        source(gauss23) = "xf_filter2d.cpp";
+        source(gauss24) = "xf_filter2d.cpp";
+        source(gauss25) = "xf_filter2d.cpp";
+        source(gauss26) = "xf_filter2d.cpp";
+        source(gauss27) = "xf_filter2d.cpp";
+        source(gauss28) = "xf_filter2d.cpp";
+        source(gauss29) = "xf_filter2d.cpp";
+        source(gauss30) = "xf_filter2d.cpp";
+        source(gauss31) = "xf_filter2d.cpp";
+        source(gauss32) = "xf_filter2d.cpp";
 
         // source(stitcher) = "kernels/gauss2_stitcher.cpp";
 

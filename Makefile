@@ -22,9 +22,9 @@ DATA_DIR = $(shell readlink -f data/)
 GRAPH_CPP := $(SRC_DIR)/graph.cpp
 DEPS := $(GRAPH_CPP)
 DEPS += $(SRC_DIR)/graph.h
-DEPS += $(SRC_DIR)/kernels.h
-DEPS += $(SRC_DIR)/xf_filter2d_aie.hpp
-DEPS += $(SRC_DIR)/xf_filter2d.cc
+DEPS += $(SRC_DIR)/aie_kernels.h
+DEPS += $(SRC_DIR)/aie_kernels/xf_filter2d_aie.h
+DEPS += $(SRC_DIR)/aie_kernels/xf_filter2d.cpp
 # Add your own dependencies
 
 AIE_FLAGS = --platform=$(XPFM)
@@ -50,6 +50,7 @@ $(BUILD_DIR)/libadf.a: $(DEPS)
 		--stacksize=2000 \
 		-include="$(XILINX_VITIS)/aietools/include" \
 		-include="$(SRC_DIR)"  \
+		-include="$(SRC_DIR)/aie_kernels" \
 		-include="$(DATA_DIR)" \
 		$(AIE_FLAGS) \
 		$(GRAPH_CPP) \
