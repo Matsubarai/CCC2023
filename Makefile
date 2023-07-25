@@ -64,7 +64,7 @@ aieemu:
 	cd $(BUILD_DIR); \
 	aiesimulator --pkg-dir=$(WORK_DIR) --i=.. --profile \
 	#--dump-vcd=foo
-	cd ../data; \
+	cd $(DATA_DIR); \
 	./sticker
 
 x86sim:
