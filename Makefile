@@ -4,69 +4,81 @@
 
 PLATFORM := xilinx_vck5000_gen4x8_qdma_2_202220_1
 TARGET := hw
-#TARGET := x86sim
-FREQ := 250
 
-XPFM = $(shell platforminfo -p $(PLATFORM) --json="file")
 XSA = $(strip $(patsubst %.xpfm, % , $(shell basename $(PLATFORM))))
-#DSPLIB_ROOT = $(shell readlink -f ../../Vitis_Libraries/dsp)
+AIE_DIR = $(shell readlink -f ./aie)
+PL_DIR = $(shell readlink -f ./pl)
+#HOST_DIR = $(shell readlink -f ./host)
+HW_LINK = $(shell readlink -f ./hw_link/config.cfg)
 
-# OUTPUT PRODUCTS 
+XCLBIN_NAME = filter2d
+JOBS = 16
+ifeq (gen4x8,$(findstring gen4x8, $(XSA)))
+	FREQ = 300
+else
+	FREQ = 100
+endif
+
+PACKAGE_FLAGS = -t $(TARGET) --platform $(PLATFORM) --save-temps
+
+VPP_FLAGS = $(PACKAGE_FLAGS)
+VPP_FLAGS += -g --optimize 2
+VPP_FLAGS += --hls.jobs $(JOBS)
+VPP_FLAGS += --config $(HW_LINK)
+VPP_FLAGS += --profile.data all:all:all
+ifneq (gen3x16,$(findstring gen3x16, $(XSA)))
+	VPP_FLAGS += --clock.defaultFreqHz $(shell echo "scale=0;$(FREQ)*1000000/1" | bc)
+endif
+
+VPP_LDFLAGS := --vivado.synth.jobs $(JOBS) --vivado.impl.jobs $(JOBS)
+
 BUILD_DIR = build.$(TARGET)
-WORK_DIR = Work
-SRC_DIR = $(shell readlink -f src/)
-DATA_DIR = $(shell readlink -f data/)
-#CONSTRAINTS_DIR = $(shell readlink -f constraints/)
+OUTPUT_DIR = $(shell readlink -f ./$(BUILD_DIR))
 
-# DEPENDENCIES for make aie
-GRAPH_CPP := $(SRC_DIR)/graph.cpp
-DEPS := $(GRAPH_CPP)
-DEPS += $(SRC_DIR)/graph.h
-DEPS += $(SRC_DIR)/aie_kernels.h
-DEPS += $(SRC_DIR)/aie_kernels/xf_filter2d_aie.h
-DEPS += $(SRC_DIR)/aie_kernels/xf_filter2d.cpp
-# Add your own dependencies
+AIE_SRCS = $(AIE_DIR)/$(BUILD_DIR)/libadf.a
+PL_KERNELS = mm2s s2mm 
+XO_SRCS = $(addprefix $(PL_DIR)/$(BUILD_DIR)/, $(addsuffix .xo, $(PL_KERNELS)))
+#HOST_APP = $(HOST_DIR)/filter2d.exe
 
-AIE_FLAGS = --platform=$(XPFM)
-#AIE_FLAGS += -include=$(DSPLIB_ROOT)/L1/include/aie
-#AIE_FLAGS += -include=$(DSPLIB_ROOT)/L1/src/aie
-#AIE_FLAGS += -include=$(DSPLIB_ROOT)/L1/tests/aie/inc
-#AIE_FLAGS += -include=$(DSPLIB_ROOT)/L1/tests/aie/src
-#AIE_FLAGS += -include=$(DSPLIB_ROOT)/L2/include/aie
-#AIE_FLAGS += -include=$(DSPLIB_ROOT)/L2/tests/aie/common/inc
+all: $(OUTPUT_DIR)/${XCLBIN_NAME}.xclbin #$(HOST_APP)
 
+$(AIE_SRCS):
+	make -C $(AIE_DIR)/ PLATFORM=$(PLATFORM) FREQ=$(FREQ) TARGET=$(TARGET)
 
-#AIE_FLAGS += --pl-freq=$(FREQ)
-#AIE_FLAGS += --dataflow
-AIE_FLAGS += --Xchess="main:darts.xargs=-nb"
+$(XO_SRCS):
+	make -C $(PL_DIR)/ PLATFORM=$(PLATFORM) FREQ=$(FREQ) TARGET=$(TARGET)
 
-all: $(BUILD_DIR)/libadf.a
+#$(HOST_APP):
+#	make -C $(HOST_DIR)
 
-$(BUILD_DIR)/libadf.a: $(DEPS)
-	@make -C ./data;
-	@mkdir -p $(BUILD_DIR);
-	cd $(BUILD_DIR); \
-	aiecompiler -v --target=$(TARGET) \
-		--stacksize=2000 \
-		-include="$(XILINX_VITIS)/aietools/include" \
-		-include="$(SRC_DIR)"  \
-		-include="$(SRC_DIR)/aie_kernels" \
-		-include="$(DATA_DIR)" \
-		$(AIE_FLAGS) \
-		$(GRAPH_CPP) \
-		-workdir=$(WORK_DIR) 2>&1 | tee aiecompiler.log
+# Building xsa
+$(OUTPUT_DIR)/$(XCLBIN_NAME).xsa: $(AIE_SRCS) $(XO_SRCS)
+	@echo "### ***** linking pl kernels into $(XCLBIN_NAME).xsa ... *****"
+	mkdir -p $(OUTPUT_DIR); \
+	cd $(OUTPUT_DIR); \
+	v++ -l $(VPP_FLAGS) \
+	  --temp_dir _x_temp/ \
+	  --report_dir reports/ \
+	  $(VPP_LDFLAGS) \
+	  $^ \
+	  -o $@ 2>&1 | tee $(XCLBIN_NAME)_xsa.log
+	@echo "### ***** $(XCLBIN_NAME).xsa linking done! *****"
+
+# Building xclbin
+$(OUTPUT_DIR)/${XCLBIN_NAME}.xclbin: $(OUTPUT_DIR)/${XCLBIN_NAME}.xsa
+	@echo "### ***** packaging xsa into $(XCLBIN_NAME).xclbin ... *****"
+	cd $(OUTPUT_DIR); \
+	v++ --package $(PACKAGE_FLAGS) \
+	  $^ \
+	  $(AIE_SRCS) \
+	  --temp_dir _x_temp \
+	  --report_dir reports/ \
+	  --package.boot_mode=ospi \
+	  -o $@ 2>&1 | tee $(XCLBIN_NAME)_xclbin.log
+	@echo "### ***** $(XCLBIN_NAME).xclbin packaging done! *****"
 
 clean:
-	@make -C ./data clean;
-	rm -rf $(BUILD_DIR) *.log *.jou
+	rm -rf *.log *.jou .Xil/
 
-aieemu:
-	cd $(BUILD_DIR); \
-	aiesimulator --pkg-dir=$(WORK_DIR) --i=.. --profile \
-	#--dump-vcd=foo
-	cd $(DATA_DIR); \
-	./sticker
-
-x86sim:
-	cd $(BUILD_DIR); \
-	x86simulator --pkg-dir=$(WORK_DIR) --i=..
+distclean: clean
+	rm -rf $(BUILD_DIR)
