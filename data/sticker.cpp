@@ -184,7 +184,7 @@ int main(int argc, char** argv) {
             for (int j = 0; j < blk_num_width; j++) {
                 
                 // 读出当前分块的数据
-                sprintf(file, "../Emulation-AIE/aiesimulator_output/data/output%d.txt", (i * blk_num_width + j) % kernel_num + 1);
+                sprintf(file, "../build.hw/aiesimulator_output/data/output%d.txt", (i * blk_num_width + j) % kernel_num + 1);
                 file_offset = ((i * blk_num_width + j) / kernel_num) * kernel_width * kernel_height + 
                                 n * ceil((float)(blk_num_height * blk_num_width) / kernel_num) * kernel_width * kernel_height;
                 read_to_mem(blk_out, kernel_width * kernel_height, file, file_offset);

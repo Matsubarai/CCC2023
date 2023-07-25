@@ -6,7 +6,7 @@ TopGraph mult_graph;
    int main(int argc, char ** argv)
    {
       mult_graph.init();
-      mult_graph.run(70);
+      mult_graph.run(280);
       mult_graph.end();
 
       return 0;

@@ -1,5 +1,3 @@
-#ifndef __GRAPH_H__
-#define __GRAPH_H__
 
 #include <adf.h>
 #include "aie_kernels.h"
