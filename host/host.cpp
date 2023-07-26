@@ -81,6 +81,24 @@ int main(int argc, char** argv) {
     size_t img_size_in_bytes = sizeof(int) * img_num_elements;
     size_t tile_size_in_bytes = sizeof(int) * tile_num_elements * iteration;
     auto img_in_buff = xrt::bo(device, img_size_in_bytes, tile_mm2mm_1.group_id(0));
+
+    auto tiled_in_buff_1 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(1));
+    auto tiled_in_buff_2 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(2));
+    auto tiled_in_buff_3 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(3));
+    auto tiled_in_buff_4 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(4));
+    auto tiled_in_buff_5 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(5));
+    auto tiled_in_buff_6 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(6));
+    auto tiled_in_buff_7 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(7));
+    auto tiled_in_buff_8 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(8));
+    auto tiled_in_buff_9 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(9));
+    auto tiled_in_buff_10 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(10));
+    auto tiled_in_buff_11 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(11));
+    auto tiled_in_buff_12 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(12));
+    auto tiled_in_buff_13 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(13));
+    auto tiled_in_buff_14 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(14));
+    auto tiled_in_buff_15 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(15));
+    //todo for hw_link: interconnect between tiler-mm2s
+    
     auto in_buff_1 = xrt::bo(device, tile_size_in_bytes, mm2s_1.group_id(0));
     auto in_buff_2 = xrt::bo(device, tile_size_in_bytes, mm2s_2.group_id(0));
     auto in_buff_3 = xrt::bo(device, tile_size_in_bytes, mm2s_3.group_id(0));
@@ -98,6 +116,24 @@ int main(int argc, char** argv) {
     auto in_buff_15 = xrt::bo(device, tile_size_in_bytes, mm2s_15.group_id(0));
 
     auto img_out_buff = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(0));
+    //TODO: WHAT ARGS?
+    auto tiled_out_buff_1 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(1));
+    auto tiled_out_buff_2 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(2));
+    auto tiled_out_buff_3 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(3));
+    auto tiled_out_buff_4 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(4));
+    auto tiled_out_buff_5 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(5));
+    auto tiled_out_buff_6 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(6));
+    auto tiled_out_buff_7 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(7));
+    auto tiled_out_buff_8 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(8));
+    auto tiled_out_buff_9 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(9));
+    auto tiled_out_buff_10 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(10));
+    auto tiled_out_buff_11 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(11));
+    auto tiled_out_buff_12 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(12));
+    auto tiled_out_buff_13 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(13));
+    auto tiled_out_buff_14 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(14));
+    auto tiled_out_buff_15 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(15));
+    //todo for hw_link: interconnect between s2mm-sticker
+    
     auto out_buff_1 = xrt::bo(device, tile_size_in_bytes, s2mm_1.group_id(0));
     auto out_buff_2 = xrt::bo(device, tile_size_in_bytes, s2mm_2.group_id(0));
     auto out_buff_3 = xrt::bo(device, tile_size_in_bytes, s2mm_3.group_id(0));
