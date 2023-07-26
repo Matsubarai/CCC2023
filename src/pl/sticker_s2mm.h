@@ -8,8 +8,8 @@
 
 
 // 将当前横纵坐标对应的 tile 拼接到图片中
-template <unsigned img_width, unsigned img_height, unsigned tile_width, unsigned tile_height, unsgined tile_index_width, unsigned tile_index_height, unsigned data_width>
-void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>> &stream) {
+template <unsigned img_width, unsigned img_height, unsigned tile_width, unsigned tile_height, unsigned data_width>
+void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>> &stream, unsigned tile_index_width, unsigned tile_index_height) {
 
     using data = qdma_axis<data_width, 0, 0, 0>;
 
