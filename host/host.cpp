@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
 
     // Get reference to the kernels
     std::cout << "Get references to compute units" << std::endl;
+    auto tile_mm2mm_1 = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
+    auto sitcker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
     auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
     auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
     auto mm2s_3 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
@@ -61,157 +63,140 @@ int main(int argc, char** argv) {
 
     // Allocating the input size of sizeIn to MM2S
     std::cout << "Allocate Buffer in Global Memory" << std::endl;
-    unsigned num_elements = 573440;
-    size_t size_in_bytes = sizeof(int) * num_elements;
-    auto in_buff_1 = xrt::bo(device, size_in_bytes, mm2s_1.group_id(0));
-    auto in_buff_2 = xrt::bo(device, size_in_bytes, mm2s_2.group_id(0));
-    auto in_buff_3 = xrt::bo(device, size_in_bytes, mm2s_3.group_id(0));
-    auto in_buff_4 = xrt::bo(device, size_in_bytes, mm2s_4.group_id(0));
-    auto in_buff_5 = xrt::bo(device, size_in_bytes, mm2s_5.group_id(0));
-    auto in_buff_6 = xrt::bo(device, size_in_bytes, mm2s_6.group_id(0));
-    auto in_buff_7 = xrt::bo(device, size_in_bytes, mm2s_7.group_id(0));
-    auto in_buff_8 = xrt::bo(device, size_in_bytes, mm2s_8.group_id(0));
-    auto in_buff_9 = xrt::bo(device, size_in_bytes, mm2s_9.group_id(0));
-    auto in_buff_10 = xrt::bo(device, size_in_bytes, mm2s_10.group_id(0));
-    auto in_buff_11 = xrt::bo(device, size_in_bytes, mm2s_11.group_id(0));
-    auto in_buff_12 = xrt::bo(device, size_in_bytes, mm2s_12.group_id(0));
-    auto in_buff_13 = xrt::bo(device, size_in_bytes, mm2s_13.group_id(0));
-    auto in_buff_14 = xrt::bo(device, size_in_bytes, mm2s_14.group_id(0));
-    auto in_buff_15 = xrt::bo(device, size_in_bytes, mm2s_15.group_id(0));
+    unsigned img_width     = 720;
+    unsigned img_height = 480;
+    unsigned img_number = 2;
+    unsigned img_num_elements = img_width * img_height * img_number;
 
-    auto out_buff_1 = xrt::bo(device, size_in_bytes, s2mm_1.group_id(0));
-    auto out_buff_2 = xrt::bo(device, size_in_bytes, s2mm_2.group_id(0));
-    auto out_buff_3 = xrt::bo(device, size_in_bytes, s2mm_3.group_id(0));
-    auto out_buff_4 = xrt::bo(device, size_in_bytes, s2mm_4.group_id(0));
-    auto out_buff_5 = xrt::bo(device, size_in_bytes, s2mm_5.group_id(0));
-    auto out_buff_6 = xrt::bo(device, size_in_bytes, s2mm_6.group_id(0));
-    auto out_buff_7 = xrt::bo(device, size_in_bytes, s2mm_7.group_id(0));
-    auto out_buff_8 = xrt::bo(device, size_in_bytes, s2mm_8.group_id(0));
-    auto out_buff_9 = xrt::bo(device, size_in_bytes, s2mm_9.group_id(0));
-    auto out_buff_10 = xrt::bo(device, size_in_bytes, s2mm_10.group_id(0));
-    auto out_buff_11 = xrt::bo(device, size_in_bytes, s2mm_11.group_id(0));
-    auto out_buff_12 = xrt::bo(device, size_in_bytes, s2mm_12.group_id(0));
-    auto out_buff_13 = xrt::bo(device, size_in_bytes, s2mm_13.group_id(0));
-    auto out_buff_14 = xrt::bo(device, size_in_bytes, s2mm_14.group_id(0));
-    auto out_buff_15 = xrt::bo(device, size_in_bytes, s2mm_15.group_id(0));
+    unsigned tile_width = 64;
+    unsigned tile_height       = 32;
+    unsigned aie_kernel_number = 15;
+
+    unsigned tile_num_width = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
+	unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
+
+    unsigned iteration = ceil((float)(tile_num_width * tile_num_height) / aie_kernel_number) * img_number;
+    
+    unsigned tile_num_elements = tile_width * tile_height;
+    size_t img_size_in_bytes = sizeof(int) * img_num_elements;
+    size_t tile_size_in_bytes = sizeof(int) * tile_num_elements * iteration;
+    auto img_in_buff = xrt::bo(device, img_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto in_buff_1 = xrt::bo(device, tile_size_in_bytes, mm2s_1.group_id(0));
+    auto in_buff_2 = xrt::bo(device, tile_size_in_bytes, mm2s_2.group_id(0));
+    auto in_buff_3 = xrt::bo(device, tile_size_in_bytes, mm2s_3.group_id(0));
+    auto in_buff_4 = xrt::bo(device, tile_size_in_bytes, mm2s_4.group_id(0));
+    auto in_buff_5 = xrt::bo(device, tile_size_in_bytes, mm2s_5.group_id(0));
+    auto in_buff_6 = xrt::bo(device, tile_size_in_bytes, mm2s_6.group_id(0));
+    auto in_buff_7 = xrt::bo(device, tile_size_in_bytes, mm2s_7.group_id(0));
+    auto in_buff_8 = xrt::bo(device, tile_size_in_bytes, mm2s_8.group_id(0));
+    auto in_buff_9 = xrt::bo(device, tile_size_in_bytes, mm2s_9.group_id(0));
+    auto in_buff_10 = xrt::bo(device, tile_size_in_bytes, mm2s_10.group_id(0));
+    auto in_buff_11 = xrt::bo(device, tile_size_in_bytes, mm2s_11.group_id(0));
+    auto in_buff_12 = xrt::bo(device, tile_size_in_bytes, mm2s_12.group_id(0));
+    auto in_buff_13 = xrt::bo(device, tile_size_in_bytes, mm2s_13.group_id(0));
+    auto in_buff_14 = xrt::bo(device, tile_size_in_bytes, mm2s_14.group_id(0));
+    auto in_buff_15 = xrt::bo(device, tile_size_in_bytes, mm2s_15.group_id(0));
+
+    auto img_out_buff = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(0));
+    auto out_buff_1 = xrt::bo(device, tile_size_in_bytes, s2mm_1.group_id(0));
+    auto out_buff_2 = xrt::bo(device, tile_size_in_bytes, s2mm_2.group_id(0));
+    auto out_buff_3 = xrt::bo(device, tile_size_in_bytes, s2mm_3.group_id(0));
+    auto out_buff_4 = xrt::bo(device, tile_size_in_bytes, s2mm_4.group_id(0));
+    auto out_buff_5 = xrt::bo(device, tile_size_in_bytes, s2mm_5.group_id(0));
+    auto out_buff_6 = xrt::bo(device, tile_size_in_bytes, s2mm_6.group_id(0));
+    auto out_buff_7 = xrt::bo(device, tile_size_in_bytes, s2mm_7.group_id(0));
+    auto out_buff_8 = xrt::bo(device, tile_size_in_bytes, s2mm_8.group_id(0));
+    auto out_buff_9 = xrt::bo(device, tile_size_in_bytes, s2mm_9.group_id(0));
+    auto out_buff_10 = xrt::bo(device, tile_size_in_bytes, s2mm_10.group_id(0));
+    auto out_buff_11 = xrt::bo(device, tile_size_in_bytes, s2mm_11.group_id(0));
+    auto out_buff_12 = xrt::bo(device, tile_size_in_bytes, s2mm_12.group_id(0));
+    auto out_buff_13 = xrt::bo(device, tile_size_in_bytes, s2mm_13.group_id(0));
+    auto out_buff_14 = xrt::bo(device, tile_size_in_bytes, s2mm_14.group_id(0));
+    auto out_buff_15 = xrt::bo(device, tile_size_in_bytes, s2mm_15.group_id(0));
 
     // Read data from file 
-    auto *DataInput1 = new int [num_elements];
-    auto *DataInput2 = new int [num_elements];
-    auto *DataInput3 = new int [num_elements];
-    auto *DataInput4 = new int [num_elements];
-    auto *DataInput5 = new int [num_elements];
-    auto *DataInput6 = new int [num_elements];
-    auto *DataInput7 = new int [num_elements];
-    auto *DataInput8 = new int [num_elements];
-    auto *DataInput9 = new int [num_elements];
-    auto *DataInput10 = new int [num_elements];
-    auto *DataInput11 = new int [num_elements];
-    auto *DataInput12 = new int [num_elements];
-    auto *DataInput13 = new int [num_elements];
-    auto *DataInput14 = new int [num_elements];
-    auto *DataInput15 = new int [num_elements];
+    auto *DataInput = new int [img_num_elements];
 
-    auto *DataOutput1 = new int [num_elements];
-    auto *DataOutput2 = new int [num_elements];
-    auto *DataOutput3 = new int [num_elements];
-    auto *DataOutput4 = new int [num_elements];
-    auto *DataOutput5 = new int [num_elements];
-    auto *DataOutput6 = new int [num_elements];
-    auto *DataOutput7 = new int [num_elements];
-    auto *DataOutput8 = new int [num_elements];
-    auto *DataOutput9 = new int [num_elements];
-    auto *DataOutput10 = new int [num_elements];
-    auto *DataOutput11 = new int [num_elements];
-    auto *DataOutput12 = new int [num_elements];
-    auto *DataOutput13 = new int [num_elements];
-    auto *DataOutput14 = new int [num_elements];
-    auto *DataOutput15 = new int [num_elements];
+    auto *DataOutput = new int [img_num_elements];
 
-    for (unsigned int i = 0; i < num_elements; i++) {
-        DataInput1[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput2[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput3[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput4[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput5[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput6[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput7[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput8[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput9[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput10[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput11[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput12[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput13[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput14[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
-        DataInput15[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
+    for (unsigned int i = 0; i < img_num_elements; i++) {
+        DataInput[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
     }
 
-    in_buff_1.write(DataInput1);
-    in_buff_2.write(DataInput2);
-    in_buff_3.write(DataInput3);
-    in_buff_4.write(DataInput4);
-    in_buff_5.write(DataInput5);
-    in_buff_6.write(DataInput6);
-    in_buff_7.write(DataInput7);
-    in_buff_8.write(DataInput8);
-    in_buff_9.write(DataInput9);
-    in_buff_10.write(DataInput10);
-    in_buff_11.write(DataInput11);
-    in_buff_12.write(DataInput12);
-    in_buff_13.write(DataInput13);
-    in_buff_14.write(DataInput14);
-    in_buff_15.write(DataInput15);
+    img_in_buff.write(DataInput);
 
     // Synchronize input buffers data to device global memory
     std::cout << "Synchronize input buffers data to device global memory" << std::endl;
-    in_buff_1.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_2.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_3.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_4.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_5.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_6.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_7.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_8.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_9.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_10.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_11.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_12.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_13.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_14.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    in_buff_15.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    img_in_buff.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     // Execute the compute units
     std::cout << "Run the kernels" << std::endl;
-    auto run_s2mm_1 = s2mm_1(out_buff_1, nullptr, size_in_bytes);
-    auto run_s2mm_2 = s2mm_2(out_buff_2, nullptr, size_in_bytes);
-    auto run_s2mm_3 = s2mm_3(out_buff_3, nullptr, size_in_bytes);
-    auto run_s2mm_4 = s2mm_4(out_buff_4, nullptr, size_in_bytes);
-    auto run_s2mm_5 = s2mm_5(out_buff_5, nullptr, size_in_bytes);
-    auto run_s2mm_6 = s2mm_6(out_buff_6, nullptr, size_in_bytes);
-    auto run_s2mm_7 = s2mm_7(out_buff_7, nullptr, size_in_bytes);
-    auto run_s2mm_8 = s2mm_8(out_buff_8, nullptr, size_in_bytes);
-    auto run_s2mm_9 = s2mm_9(out_buff_9, nullptr, size_in_bytes);
-    auto run_s2mm_10 = s2mm_10(out_buff_10, nullptr, size_in_bytes);
-    auto run_s2mm_11 = s2mm_11(out_buff_11, nullptr, size_in_bytes);
-    auto run_s2mm_12 = s2mm_12(out_buff_12, nullptr, size_in_bytes);
-    auto run_s2mm_13 = s2mm_13(out_buff_13, nullptr, size_in_bytes);
-    auto run_s2mm_14 = s2mm_14(out_buff_14, nullptr, size_in_bytes);
-    auto run_s2mm_15 = s2mm_15(out_buff_15, nullptr, size_in_bytes);
-    auto run_mm2s_1 = mm2s_1(in_buff_1, nullptr, size_in_bytes);
-    auto run_mm2s_2 = mm2s_2(in_buff_2, nullptr, size_in_bytes);
-    auto run_mm2s_3 = mm2s_3(in_buff_3, nullptr, size_in_bytes);
-    auto run_mm2s_4 = mm2s_4(in_buff_4, nullptr, size_in_bytes);
-    auto run_mm2s_5 = mm2s_5(in_buff_5, nullptr, size_in_bytes);
-    auto run_mm2s_6 = mm2s_6(in_buff_6, nullptr, size_in_bytes);
-    auto run_mm2s_7 = mm2s_7(in_buff_7, nullptr, size_in_bytes);
-    auto run_mm2s_8 = mm2s_8(in_buff_8, nullptr, size_in_bytes);
-    auto run_mm2s_9 = mm2s_9(in_buff_9, nullptr, size_in_bytes);
-    auto run_mm2s_10 = mm2s_10(in_buff_10, nullptr, size_in_bytes);
-    auto run_mm2s_11 = mm2s_11(in_buff_11, nullptr, size_in_bytes);
-    auto run_mm2s_12 = mm2s_12(in_buff_12, nullptr, size_in_bytes);
-    auto run_mm2s_13 = mm2s_13(in_buff_13, nullptr, size_in_bytes);
-    auto run_mm2s_14 = mm2s_14(in_buff_14, nullptr, size_in_bytes);
-    auto run_mm2s_15 = mm2s_15(in_buff_15, nullptr, size_in_bytes);
+
+    
+
+    auto run_tile_mm2mm_1 = tile_mm2mm_1<img_width, img_height, tile_width, data_width>(img_in_buff, -----, 0, 0);
+    run_tile_mm2mm_1.wait();
+
+    for (unsigned i = 0; i < img_number; i++) {
+
+        for (unsigned j = 0; j < aie_kernel_number; j++) {
+
+            for (unsigned k = 0; k < iteration; k++) {
+
+                
+
+            }
+
+        }
+
+        // for (unsigned ti = 0; ti < tile_num_height; ti++) {
+        //     for (unsigned tj = 0; tj < tile_num_width; tj++) {
+        //         if (i == 0 && ti == 0 && tj ==0)
+        //             continue;
+        //         unsigned aie_index = (ti * tile_num_width + tj) % aie_kernel_number;
+                
+        //         run_tile_mm2mm_1.set_arg(1, -----);
+        //         run_tile_mm2mm_1.set_arg(2, tj);
+        //         run_tile_mm2mm_1.set_arg(3, ti);
+        //         run_tile_mm2mm_1.start();
+        //         run_tile_mm2mm_1.wait();
+
+        //     }
+        // }
+
+    }
+
+    auto run_s2mm_1 = s2mm_1(out_buff_1, nullptr, tile_size_in_bytes);
+    auto run_s2mm_2 = s2mm_2(out_buff_2, nullptr, tile_size_in_bytes);
+    auto run_s2mm_3 = s2mm_3(out_buff_3, nullptr, tile_size_in_bytes);
+    auto run_s2mm_4 = s2mm_4(out_buff_4, nullptr, tile_size_in_bytes);
+    auto run_s2mm_5 = s2mm_5(out_buff_5, nullptr, tile_size_in_bytes);
+    auto run_s2mm_6 = s2mm_6(out_buff_6, nullptr, tile_size_in_bytes);
+    auto run_s2mm_7 = s2mm_7(out_buff_7, nullptr, tile_size_in_bytes);
+    auto run_s2mm_8 = s2mm_8(out_buff_8, nullptr, tile_size_in_bytes);
+    auto run_s2mm_9 = s2mm_9(out_buff_9, nullptr, tile_size_in_bytes);
+    auto run_s2mm_10 = s2mm_10(out_buff_10, nullptr, tile_size_in_bytes);
+    auto run_s2mm_11 = s2mm_11(out_buff_11, nullptr, tile_size_in_bytes);
+    auto run_s2mm_12 = s2mm_12(out_buff_12, nullptr, tile_size_in_bytes);
+    auto run_s2mm_13 = s2mm_13(out_buff_13, nullptr, tile_size_in_bytes);
+    auto run_s2mm_14 = s2mm_14(out_buff_14, nullptr, tile_size_in_bytes);
+    auto run_s2mm_15 = s2mm_15(out_buff_15, nullptr, tile_size_in_bytes);
+ 
+    auto run_mm2s_1 = mm2s_1(in_buff_1, nullptr, tile_size_in_bytes);
+    auto run_mm2s_2 = mm2s_2(in_buff_2, nullptr, tile_size_in_bytes);
+    auto run_mm2s_3 = mm2s_3(in_buff_3, nullptr, tile_size_in_bytes);
+    auto run_mm2s_4 = mm2s_4(in_buff_4, nullptr, tile_size_in_bytes);
+    auto run_mm2s_5 = mm2s_5(in_buff_5, nullptr, tile_size_in_bytes);
+    auto run_mm2s_6 = mm2s_6(in_buff_6, nullptr, tile_size_in_bytes);
+    auto run_mm2s_7 = mm2s_7(in_buff_7, nullptr, tile_size_in_bytes);
+    auto run_mm2s_8 = mm2s_8(in_buff_8, nullptr, tile_size_in_bytes);
+    auto run_mm2s_9 = mm2s_9(in_buff_9, nullptr, tile_size_in_bytes);
+    auto run_mm2s_10 = mm2s_10(in_buff_10, nullptr, tile_size_in_bytes);
+    auto run_mm2s_11 = mm2s_11(in_buff_11, nullptr, tile_size_in_bytes);
+    auto run_mm2s_12 = mm2s_12(in_buff_12, nullptr, tile_size_in_bytes);
+    auto run_mm2s_13 = mm2s_13(in_buff_13, nullptr, tile_size_in_bytes);
+    auto run_mm2s_14 = mm2s_14(in_buff_14, nullptr, tile_size_in_bytes);
+    auto run_mm2s_15 = mm2s_15(in_buff_15, nullptr, tile_size_in_bytes);
 
     // Wait for kernels to complete
     run_mm2s_1.wait();
@@ -276,39 +261,47 @@ int main(int argc, char** argv) {
     run_s2mm_15.wait();
     std::cout << "s2mm_15 completed" << std::endl;
 
+    auto run_sticker_mm2mm_1 = sticker_mm2mm_1<img_width, img_height, tile_width, data_width>(-----, img_out_buff, 0, 0);
+    run_sticker_mm2mm_1.wait();
+
+    for (unsigned i = 0; i < img_number; i++) {
+
+        for (unsigned ti = 0; ti < tile_num_height; ti++) {
+            for (unsigned tj = 0; tj < tile_num_width; tj++) {
+                if (i == 0 && ti == 0 && tj ==0)
+                    continue;
+                unsigned aie_index = (ti * tile_num_width + tj) % aie_kernel_number;
+                
+                run_tile_mm2mm_1.set_arg(0, -----);
+                run_tile_mm2mm_1.set_arg(2, tj);
+                run_tile_mm2mm_1.set_arg(3, ti);
+                run_tile_mm2mm_1.start();
+                run_tile_mm2mm_1.wait();
+
+            }
+        }
+
+    }
+
+
     // Synchronize the output buffer data from the device
-    out_buff_1.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_2.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_3.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_4.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_5.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_6.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_7.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_8.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_9.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_10.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_11.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_12.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_13.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_14.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-    out_buff_15.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // Read output buffer data to local buffer
-    out_buff_1.read(DataOutput1);
-    out_buff_2.read(DataOutput2);
-    out_buff_3.read(DataOutput3);
-    out_buff_4.read(DataOutput4);
-    out_buff_5.read(DataOutput5);
-    out_buff_6.read(DataOutput6);
-    out_buff_7.read(DataOutput7);
-    out_buff_8.read(DataOutput8);
-    out_buff_9.read(DataOutput9);
-    out_buff_10.read(DataOutput10);
-    out_buff_11.read(DataOutput11);
-    out_buff_12.read(DataOutput12);
-    out_buff_13.read(DataOutput13);
-    out_buff_14.read(DataOutput14);
-    out_buff_15.read(DataOutput15);
+    // out_buff_1.read(DataOutput1);
+    // out_buff_2.read(DataOutput2);
+    // out_buff_3.read(DataOutput3);
+    // out_buff_4.read(DataOutput4);
+    // out_buff_5.read(DataOutput5);
+    // out_buff_6.read(DataOutput6);
+    // out_buff_7.read(DataOutput7);
+    // out_buff_8.read(DataOutput8);
+    // out_buff_9.read(DataOutput9);
+    // out_buff_10.read(DataOutput10);
+    // out_buff_11.read(DataOutput11);
+    // out_buff_12.read(DataOutput12);
+    // out_buff_13.read(DataOutput13);
+    // out_buff_14.read(DataOutput14);
+    // out_buff_15.read(DataOutput15);
 
     std::cout << "Writing data to output file" << std::endl;
     std::ofstream outputfile;

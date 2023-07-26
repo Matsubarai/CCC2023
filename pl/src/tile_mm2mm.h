@@ -7,9 +7,10 @@
 
 // 对一张图片的指定位置进行 tile 操作
 template <unsigned img_width, unsigned img_height, unsigned tile_width, unsigned tile_height, unsigned data_width>
-void tile(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>> &stream, unsgined tile_index_width, unsigned tile_index_height) {
+void tile_mm2mm(ap_int<data_width> *mem_in, ap_int<data_width> *mem_out, unsgined tile_index_width, unsigned tile_index_height) {
 
     using data = qdma_axis<data_width, 0, 0, 0>;
+    unsigned count = 0;
 
     // 当前 tile 的偏移
     unsigned offset_width  = tile_index_width * (tile_width - 2);
@@ -40,11 +41,9 @@ void tile(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>> &
 
             // 从 mem 中取出对应数据 并将其放入 stream
             if (index == -1)
-                data x { 0 };
+                mem_out[count++] = 0;
             else
-                data x { mem[index] };
-            x.keep_all();
-            stream.write(x);
+                mem_out[count++] = mem_in[index];
         }
     }
 }

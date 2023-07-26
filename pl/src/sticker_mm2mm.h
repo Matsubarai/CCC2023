@@ -9,7 +9,7 @@
 
 // 将当前横纵坐标对应的 tile 拼接到图片中
 template <unsigned img_width, unsigned img_height, unsigned tile_width, unsigned tile_height, unsigned data_width>
-void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>> &stream, unsigned tile_index_width, unsigned tile_index_height) {
+void sticker_mm2mm(ap_int<data_width> *mem_in, ap_int<data_width> *mem_out, unsigned tile_index_width, unsigned tile_index_height) {
 
     using data = qdma_axis<data_width, 0, 0, 0>;
 
@@ -24,10 +24,9 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
     if (tile_index_height == 0 && tile_index_width == 0) {
         for (int i = 0; i < tile_height - 1; i++) {
             for (int j = 0; j < tile_width - 1; j++) {
-
+                
                 index = (i + offset_height) * img_width + j + offset_width;
-                data x = stream.read();
-                mem[index] = x.get_data();
+                mem_out[index] = mem_in[i * tile_width + j];
 
             }
         }
@@ -38,8 +37,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
             for (int j = 1; j < tile_width - 1; j++) {
 
                 index = (i + offset_height) * img_width + j + offset_width;
-                data x = stream.read();
-                mem[index] = x.get_data();
+                mem_out[index] = mem_in[i * tile_width + j];
 
             }
         }
@@ -50,9 +48,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
             for (int j = 0; j < tile_width - 1; j++) {
 
                 index = (i + offset_height) * img_width + j + offset_width;
-                data x = stream.read();
-                mem[index] = x.get_data();
-
+                mem_out[index] = mem_in[i * tile_width + j];
             }
         }
     }
@@ -62,8 +58,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
             for (int j = 1; j < tile_width - 1; j++) {
                 
                 index = (i + offset_height) * img_width + j + offset_width;
-                data x = stream.read();
-                mem[index] = x.get_data();
+                mem_out[index] = mem_in[i * tile_width + j];
 
             }
         }
@@ -75,8 +70,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
                 if (j + offset_width < img_width) {
                     
                     index = (i + offset_height) * img_width + j + offset_width;
-                    data x = stream.read();
-                    mem[index] = x.get_data();
+                    mem_out[index] = mem_in[i * tile_width + j];
                 
                 }    
             }
@@ -89,8 +83,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
                 if (j + offset_width < img_width) {
 
                     index = (i + offset_height) * img_width + j + offset_width;
-                    data x = stream.read();
-                    mem[index] = x.get_data();
+                    mem_out[index] = mem_in[i * tile_width + j];
 
                 }
             }
@@ -103,8 +96,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
                 if (i + offset_height < img_height) {
 
                     index = (i + offset_height) * img_width + j + offset_width;
-                    data x = stream.read();
-                    mem[index] = x.get_data();
+                    mem_out[index] = mem_in[i * tile_width + j];
 
                 }
             }
@@ -117,8 +109,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
                 if (i + offset_height < img_height) {
 
                     index = (i + offset_height) * img_width + j + offset_width;
-                    data x = stream.read();
-                    mem[index] = x.get_data();
+                    mem_out[index] = mem_in[i * tile_width + j];
 
                 }
             }
@@ -131,8 +122,7 @@ void sticker(ap_int<data_width> *mem, hls::stream<qdma_axis<data_width, 0, 0, 0>
                 if ((i + offset_height < img_height) && (j + offset_width < img_width)) {
 
                     index = (i + offset_height) * img_width + j + offset_width;
-                    data x = stream.read();
-                    mem[index] = x.get_data();
+                    mem_out[index] = mem_in[i * tile_width + j];
 
                 }
             }

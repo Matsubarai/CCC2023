@@ -12,7 +12,7 @@ BUILD_DIR = build.$(TARGET)
 VPP_FLAGS = -t $(TARGET) --platform $(PLATFORM)# --save-temps
 VPP_FLAGS += --kernel_frequency $(FREQ)
 
-TARGETS = mm2s s2mm 
+TARGETS = mm2s s2mm sticker_mm2mm tile_mm2mm
 all: $(addprefix $(BUILD_DIR)/, $(addsuffix .xo,$(TARGETS)))
 
 $(BUILD_DIR)/%.xo: src/%.cpp
