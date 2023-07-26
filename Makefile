@@ -8,11 +8,11 @@ TARGET := hw
 XSA = $(strip $(patsubst %.xpfm, % , $(shell basename $(PLATFORM))))
 AIE_DIR = $(shell readlink -f ./aie)
 PL_DIR = $(shell readlink -f ./pl)
-#HOST_DIR = $(shell readlink -f ./host)
+HOST_DIR = $(shell readlink -f ./host)
 HW_LINK = $(shell readlink -f ./hw_link/config.cfg)
 
 XCLBIN_NAME = filter2d
-JOBS = 16
+JOBS = 4
 ifeq (gen4x8,$(findstring gen4x8, $(XSA)))
 	FREQ = 300
 else
@@ -38,9 +38,9 @@ OUTPUT_DIR = $(shell readlink -f ./$(BUILD_DIR))
 AIE_SRCS = $(AIE_DIR)/$(BUILD_DIR)/libadf.a
 PL_KERNELS = mm2s s2mm 
 XO_SRCS = $(addprefix $(PL_DIR)/$(BUILD_DIR)/, $(addsuffix .xo, $(PL_KERNELS)))
-#HOST_APP = $(HOST_DIR)/filter2d.exe
+HOST_APP = $(HOST_DIR)/filter2d.exe
 
-all: $(OUTPUT_DIR)/${XCLBIN_NAME}.xclbin #$(HOST_APP)
+all: $(OUTPUT_DIR)/${XCLBIN_NAME}.xclbin $(HOST_APP)
 
 $(AIE_SRCS):
 	make -C $(AIE_DIR)/ PLATFORM=$(PLATFORM) FREQ=$(FREQ) TARGET=$(TARGET)
@@ -48,8 +48,8 @@ $(AIE_SRCS):
 $(XO_SRCS):
 	make -C $(PL_DIR)/ PLATFORM=$(PLATFORM) FREQ=$(FREQ) TARGET=$(TARGET)
 
-#$(HOST_APP):
-#	make -C $(HOST_DIR)
+$(HOST_APP):
+	make -C $(HOST_DIR)
 
 # Building xsa
 $(OUTPUT_DIR)/$(XCLBIN_NAME).xsa: $(AIE_SRCS) $(XO_SRCS)
