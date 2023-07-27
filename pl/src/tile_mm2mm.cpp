@@ -7,15 +7,14 @@
 // 对一张图片的指定位置进行 tile 操作
 void tile_mm2mm(ap_int<DWIDTH> *mem_in, 
 ap_int<DWIDTH> *mem_out1, ap_int<DWIDTH> *mem_out2, ap_int<DWIDTH> *mem_out3, ap_int<DWIDTH> *mem_out4, 
-ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7, ap_int<DWIDTH> *mem_out8, ap_int<DWIDTH> *mem_out9, ap_int<DWIDTH> *mem_out10,
-ap_int<DWIDTH> *mem_out11, ap_int<DWIDTH> *mem_out12, ap_int<DWIDTH> *mem_out13, ap_int<DWIDTH> *mem_out14, ap_int<DWIDTH> *mem_out15) {
+ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
 
 
     // 计算一张图片有多少 tile
     unsigned tile_num_width  = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
     unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
 
-    unsigned count[15] = {0};
+    unsigned count[AIE_KERNEL_NUMBER] = {0};
     int mem_in_index;
     // unsigned mem_out_index;
 
@@ -29,7 +28,7 @@ ap_int<DWIDTH> *mem_out11, ap_int<DWIDTH> *mem_out12, ap_int<DWIDTH> *mem_out13,
             for (unsigned k = 0; k < tile_num_width; k++) {
 
                 // 当前的 tile 应该传输给第 aie_index 个 aie kernel
-                unsigned aie_index = (j * tile_num_width + k) % aie_kernel_number + 1;
+                unsigned aie_index = (j * tile_num_width + k) % AIE_KERNEL_NUMBER + 1;
                 
                 // 当前 tile 相对于第一个元素的偏移
                 unsigned offset_width  = k * (tile_width - 2);
@@ -99,54 +98,6 @@ ap_int<DWIDTH> *mem_out11, ap_int<DWIDTH> *mem_out12, ap_int<DWIDTH> *mem_out13,
                                     mem_out7[count[aie_index]++] = 0;
                                 else 
                                     mem_out7[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 8:
-                                if (mem_in_index = -1)
-                                    mem_out8[count[aie_index]++] = 0;
-                                else 
-                                    mem_out8[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 9:
-                                if (mem_in_index = -1)
-                                    mem_out9[count[aie_index]++] = 0;
-                                else 
-                                    mem_out9[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 10:
-                                if (mem_in_index = -1)
-                                    mem_out10[count[aie_index]++] = 0;
-                                else 
-                                    mem_out10[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 11:
-                                if (mem_in_index = -1)
-                                    mem_out11[count[aie_index]++] = 0;
-                                else 
-                                    mem_out11[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 12:
-                                if (mem_in_index = -1)
-                                    mem_out12[count[aie_index]++] = 0;
-                                else 
-                                    mem_out12[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 13:
-                                if (mem_in_index = -1)
-                                    mem_out13[count[aie_index]++] = 0;
-                                else 
-                                    mem_out13[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 14:
-                                if (mem_in_index = -1)
-                                    mem_out14[count[aie_index]++] = 0;
-                                else 
-                                    mem_out14[count[aie_index]++] = mem_in[mem_in_index];
-                                break;
-                            case 15:
-                                if (mem_in_index = -1)
-                                    mem_out15[count[aie_index]++] = 0;
-                                else 
-                                    mem_out15[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             default:
                                 if (mem_in_index = -1)
