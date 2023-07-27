@@ -43,7 +43,7 @@ AIE_FLAGS += --Xchess="main:darts.xargs=-nb"
 all: $(BUILD_DIR)/libadf.a
 
 $(BUILD_DIR)/libadf.a: $(DEPS)
-	@make -C ./data;
+	#@make -C ./data;
 	@mkdir -p $(BUILD_DIR);
 	cd $(BUILD_DIR); \
 	aiecompiler -v --target=$(TARGET) \
@@ -57,7 +57,7 @@ $(BUILD_DIR)/libadf.a: $(DEPS)
 		-workdir=$(WORK_DIR) 2>&1 | tee aiecompiler.log
 
 clean:
-	@make -C ./data clean;
+	#@make -C ./data clean;
 	rm -rf $(BUILD_DIR) *.log *.jou
 
 aieemu:
@@ -65,7 +65,7 @@ aieemu:
 	aiesimulator --pkg-dir=$(WORK_DIR) --i=.. --profile \
 	#--dump-vcd=foo
 	cd $(DATA_DIR); \
-	./sticker
+	#./sticker
 
 x86sim:
 	cd $(BUILD_DIR); \

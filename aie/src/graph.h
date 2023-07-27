@@ -2,6 +2,10 @@
 #include <adf.h>
 #include "aie_kernels.h"
 
+#ifndef AIE_KERNEL_NUMBER
+#define AIE_KERNEL_NUMBER 7
+#endif
+
 using namespace adf;
 
 template<int R=100>
@@ -27,7 +31,7 @@ class Filter2DBlock : public graph {
 
 class TopGraph : public graph {
     public:
-        static constexpr unsigned num_input = 7, num_output = 7;
+        static constexpr unsigned num_input = AIE_KERNEL_NUMBER, num_output = AIE_KERNEL_NUMBER;
         std::array<input_plio, num_input> in;
         std::array<output_plio, num_output> out;
 

@@ -9,10 +9,10 @@
 <ENTRY>
 {
  "type": "ET_CmdStep",
- "dateTimestamp": "Wed Jul 26 11:40:06 2023",
- "timestampMillis": "1690342806243",
+ "dateTimestamp": "Thu Jul 27 15:01:02 2023",
+ "timestampMillis": "1690441262524",
  "buildStep": {
-  "cmdId": "7b331676-9b9c-4109-86b4-64f1b102dae4",
+  "cmdId": "b137727d-7b44-4ccc-bbaa-eea80daa29df",
   "name": "v++",
   "logFile": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/package.steps.log",
   "commandLine": "/tools/Xilinx/Vitis/2022.2/bin/unwrapped/lnx64.o/v++  --vivado.prop \"run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\" --package -t hw --platform xilinx_vck5000_gen4x8_qdma_2_202220_1 --save-temps /home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xsa /home/forevertime/Documents/Github/CCC2023/aie/build.hw/libadf.a --temp_dir _x_temp --report_dir reports/ --package.boot_mode=ospi -o /home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xclbin ",
@@ -41,10 +41,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Jul 26 11:40:06 2023",
- "timestampMillis": "1690342806244",
+ "dateTimestamp": "Thu Jul 27 15:01:02 2023",
+ "timestampMillis": "1690441262524",
  "status": {
-  "cmdId": "7b331676-9b9c-4109-86b4-64f1b102dae4",
+  "cmdId": "b137727d-7b44-4ccc-bbaa-eea80daa29df",
   "state": "CS_RUNNING"
  }
 }
@@ -52,8 +52,8 @@
 <ENTRY>
 {
  "type": "ET_FlowMetaData",
- "dateTimestamp": "Wed Jul 26 11:40:08 2023",
- "timestampMillis": "1690342808681",
+ "dateTimestamp": "Thu Jul 27 15:01:04 2023",
+ "timestampMillis": "1690441264826",
  "buildSummary": {
   "hardwarePlatform": "xilinx_vck5000_gen4x8_qdma_2_202220_1.xpfm",
   "hardwareDsa": "",
@@ -127,10 +127,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Jul 26 11:40:10 2023",
- "timestampMillis": "1690342810199",
+ "dateTimestamp": "Thu Jul 27 15:01:07 2023",
+ "timestampMillis": "1690441267093",
  "status": {
-  "cmdId": "7b331676-9b9c-4109-86b4-64f1b102dae4",
+  "cmdId": "b137727d-7b44-4ccc-bbaa-eea80daa29df",
   "state": "CS_PASSED"
  }
 }
@@ -138,8 +138,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Jul 26 11:40:10 2023",
- "timestampMillis": "1690342810234",
+ "dateTimestamp": "Thu Jul 27 15:01:07 2023",
+ "timestampMillis": "1690441267127",
  "report": {
   "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/reports/package/v++_package_filter2d_guidance.html",
   "name": "",
@@ -152,8 +152,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Jul 26 11:40:10 2023",
- "timestampMillis": "1690342810234",
+ "dateTimestamp": "Thu Jul 27 15:01:07 2023",
+ "timestampMillis": "1690441267128",
  "report": {
   "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/v++_package_filter2d_guidance.pb3",
   "name": "",

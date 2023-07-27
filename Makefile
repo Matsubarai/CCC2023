@@ -12,7 +12,7 @@ HOST_DIR = $(shell readlink -f ./host)
 HW_LINK = $(shell readlink -f ./hw_link/config.cfg)
 
 XCLBIN_NAME = filter2d
-JOBS = 4
+JOBS = 6
 ifeq (gen4x8,$(findstring gen4x8, $(XSA)))
 	FREQ = 300
 else
