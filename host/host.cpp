@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
 
     std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buff_;
     for (unsigned i = 1; i <= tiled_in_buff_.size(); ++i) {
-        tiled_in_buff_[i] = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(i));
+        tiled_in_buff_[i] = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
     }
     
     std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buff_;
@@ -121,11 +121,11 @@ int main(int argc, char** argv) {
         in_buff_[i] = xrt::bo(device, tile_size_in_bytes, mm2s_[i].group_id(0));
     }
 
-    auto img_out_buff = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(15));
+    auto img_out_buff = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(0));
 
     std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_out_buff_;
     for (unsigned i = 0; i < tiled_out_buff_.size(); ++i) {
-        tiled_out_buff_[i] = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(i));
+        tiled_out_buff_[i] = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(0));
     }
 
     std::array<xrt::bo, AIE_KERNEL_NUMBER> out_buff_;
