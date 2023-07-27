@@ -38,7 +38,7 @@ ap_int<DWIDTH> *mem_out) {
             for (unsigned tile_index_width = 0; tile_index_width < tile_num_width; tile_index_width++) {
 
                 // 当前的 tile 应该从第 aie_index 个 aie kernel 对应的 mem 处取得
-                unsigned aie_index = (tile_index_height * tile_num_width + tile_index_width) % AIE_KERNEL_NUMBER;d
+                unsigned aie_index = (tile_index_height * tile_num_width + tile_index_width) % AIE_KERNEL_NUMBER;
 
                 // 当前 tile 在当前图片中的偏移
                 unsigned offset_width  = tile_index_width  * (tile_width  - 2);
