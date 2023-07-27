@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
     img_out_buff.read(DataOutput);
 
     int erro = 0;
-    for (int i = 0; i < img_num_element; i++) {
+    for (int i = 0; i < img_num_elements; i++) {
         if (abs(DataOutput[i] - DataOutput_ref[i]) > 1e-3) {
             erro++;
         }
