@@ -78,6 +78,9 @@ $(OUTPUT_DIR)/${XCLBIN_NAME}.xclbin: $(OUTPUT_DIR)/${XCLBIN_NAME}.xsa
 	@echo "### ***** $(XCLBIN_NAME).xclbin packaging done! *****"
 
 clean:
+	make -C $(AIE_DIR) clean; \
+	make -C $(PL_DIR) clean; \
+	make -C $(HOST_DIR) clean; \
 	rm -rf *.log *.jou .Xil/
 
 distclean: clean
