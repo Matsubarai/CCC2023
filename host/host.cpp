@@ -168,11 +168,27 @@ int main(int argc, char** argv) {
     // Execute the compute units
     std::cout << "Run the kernels" << std::endl;
 
-    
-
+    //TODO:tiler interface?
     auto run_tile_mm2mm_1 = tile_mm2mm_1<img_width, img_height, tile_width, data_width>(img_in_buff, -----, 0, 0);
     run_tile_mm2mm_1.wait();
 
+    in_buff_1.copy(tile_in_buff_1, tile_size_in_bytes);
+    in_buff_2.copy(tile_in_buff_2, tile_size_in_bytes);
+    in_buff_3.copy(tile_in_buff_3, tile_size_in_bytes);
+    in_buff_4.copy(tile_in_buff_4, tile_size_in_bytes);
+    in_buff_5.copy(tile_in_buff_5, tile_size_in_bytes);
+    in_buff_6.copy(tile_in_buff_6, tile_size_in_bytes);
+    in_buff_7.copy(tile_in_buff_7, tile_size_in_bytes);
+    in_buff_8.copy(tile_in_buff_8, tile_size_in_bytes);
+    in_buff_9.copy(tile_in_buff_9, tile_size_in_bytes);
+    in_buff_10.copy(tile_in_buff_10, tile_size_in_bytes);
+    in_buff_11.copy(tile_in_buff_11, tile_size_in_bytes);
+    in_buff_12.copy(tile_in_buff_12, tile_size_in_bytes);
+    in_buff_13.copy(tile_in_buff_13, tile_size_in_bytes);
+    in_buff_14.copy(tile_in_buff_14, tile_size_in_bytes);
+    in_buff_15.copy(tile_in_buff_15, tile_size_in_bytes);
+
+    //TODO: NEED TO IDENTIFY TILE TRANSFER MECHANISM
     for (unsigned i = 0; i < img_number; i++) {
 
         for (unsigned j = 0; j < aie_kernel_number; j++) {
@@ -297,9 +313,27 @@ int main(int argc, char** argv) {
     run_s2mm_15.wait();
     std::cout << "s2mm_15 completed" << std::endl;
 
+    tiled_out_buff_1.copy(out_buff_1, tile_size_in_bytes);
+    tiled_out_buff_2.copy(out_buff_2, tile_size_in_bytes);
+    tiled_out_buff_3.copy(out_buff_3, tile_size_in_bytes);
+    tiled_out_buff_4.copy(out_buff_4, tile_size_in_bytes);
+    tiled_out_buff_5.copy(out_buff_5, tile_size_in_bytes);
+    tiled_out_buff_6.copy(out_buff_6, tile_size_in_bytes);
+    tiled_out_buff_7.copy(out_buff_7, tile_size_in_bytes);
+    tiled_out_buff_8.copy(out_buff_8, tile_size_in_bytes);
+    tiled_out_buff_9.copy(out_buff_9, tile_size_in_bytes);
+    tiled_out_buff_10.copy(out_buff_10, tile_size_in_bytes);
+    tiled_out_buff_11.copy(out_buff_11, tile_size_in_bytes);
+    tiled_out_buff_12.copy(out_buff_12, tile_size_in_bytes);
+    tiled_out_buff_13.copy(out_buff_13, tile_size_in_bytes);
+    tiled_out_buff_14.copy(out_buff_14, tile_size_in_bytes);
+    tiled_out_buff_15.copy(out_buff_15, tile_size_in_bytes);
+
+    //TODO:sticker interface?
     auto run_sticker_mm2mm_1 = sticker_mm2mm_1<img_width, img_height, tile_width, data_width>(-----, img_out_buff, 0, 0);
     run_sticker_mm2mm_1.wait();
 
+    //TODO: NEED TO IDENTIFY TILE TRANSFER MECHANISM
     for (unsigned i = 0; i < img_number; i++) {
 
         for (unsigned ti = 0; ti < tile_num_height; ti++) {
