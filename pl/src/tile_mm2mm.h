@@ -21,7 +21,7 @@ ap_int<data_width> *mem_out11, ap_int<data_width> *mem_out12, ap_int<data_width>
     // 遍历所有图片
     for (unsigned i = 0; i < img_number; i++) {
 
-        unsigned offset_img = i * tile_num_width * tile_num_height * tile_width * tile_height;
+        unsigned offset_img = i * img_width * img_height;
 
         // 遍历所有的 tile
         for (unsigned j = 0; j < tile_num_height; j++) {
