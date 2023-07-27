@@ -185,13 +185,13 @@ int main(int argc, char** argv) {
     std::cout << "Run the mm2s PL" << std::endl;
     std::array<xrt::run, AIE_KERNEL_NUMBER> run_mm2s_;
 
-    run_mm2s_[0] = mm2s_[i](in_buffer_0, nullptr, tile_size_in_bytes);
-    run_mm2s_[1] = mm2s_[i](in_buffer_1, nullptr, tile_size_in_bytes);
-    run_mm2s_[2] = mm2s_[i](in_buffer_2, nullptr, tile_size_in_bytes);
-    run_mm2s_[3] = mm2s_[i](in_buffer_3, nullptr, tile_size_in_bytes);
-    run_mm2s_[4] = mm2s_[i](in_buffer_4, nullptr, tile_size_in_bytes);
-    run_mm2s_[5] = mm2s_[i](in_buffer_5, nullptr, tile_size_in_bytes);
-    run_mm2s_[6] = mm2s_[i](in_buffer_6, nullptr, tile_size_in_bytes);
+    run_mm2s_[0] = mm2s_[0](in_buffer_0, nullptr, tile_size_in_bytes);
+    run_mm2s_[1] = mm2s_[1](in_buffer_1, nullptr, tile_size_in_bytes);
+    run_mm2s_[2] = mm2s_[2](in_buffer_2, nullptr, tile_size_in_bytes);
+    run_mm2s_[3] = mm2s_[3](in_buffer_3, nullptr, tile_size_in_bytes);
+    run_mm2s_[4] = mm2s_[4](in_buffer_4, nullptr, tile_size_in_bytes);
+    run_mm2s_[5] = mm2s_[5](in_buffer_5, nullptr, tile_size_in_bytes);
+    run_mm2s_[6] = mm2s_[6](in_buffer_6, nullptr, tile_size_in_bytes);
 
     // Wait for kernels to complete
     for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
