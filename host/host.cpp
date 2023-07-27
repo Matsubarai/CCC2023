@@ -8,11 +8,59 @@
 #include <iostream>
 #include <random>
 #include <typeinfo>
+#include <math.h>
 
 #include <xrt.h>
 #include <experimental/xrt_kernel.h>
 
 #define AIE_KERNEL_NUMBER 7
+
+void kernel_cal(int* kernel_buffer, unsigned tile_width, unsigned tile_height, int* kernel, int* kernel_out_buffer) {
+    int Ptile_width = tile_width + 2;
+    int Ptile_height = tile_height + 2;
+    int Ptile_size = Ptile_width * Ptile_height;
+    int* Pkernel = (int*)malloc(sizeof(int) * Ptile_size);
+
+
+    // 对输入图片进行 padding
+    for (int i = 0; i < tile_height; i++) {
+        for (int j = 0; j < tile_width; j++) {
+            Pkernel[(i + 1) * Ptile_width + (j + 1)] = kernel_buffer[i * tile_width + j];
+        }
+    }
+
+    Pkernel[0] = Pkernel[Ptile_width + 1];
+    Pkernel[Ptile_width - 1] = Pkernel[2 * Ptile_width - 2];
+    Pkernel[(Ptile_height - 1) * Ptile_width] = Pkernel[(Ptile_height - 2) * Ptile_width + 1];
+    Pkernel[Ptile_height * Ptile_width - 1] = Pkernel[(Ptile_height - 1) * Ptile_width - 2];
+    for (int i = 1; i < Ptile_width - 1; i++) {
+        Pkernel[i] = Pkernel[i + Ptile_width];
+    }
+    for (int i = 1; i < Ptile_height - 1; i++) {
+        Pkernel[i * Ptile_width] = Pkernel[i * Ptile_width + 1];
+        Pkernel[(i + 1) * Ptile_width - 1] = Pkernel[(i + 1) * Ptile_width - 2];
+    }
+    for (int i = 1; i < Ptile_width - 1; i++) {
+        Pkernel[(Ptile_height - 1) * Ptile_width + i] = Pkernel[(Ptile_height - 2) * Ptile_width + i];
+    }
+
+
+    // 利用循环进行卷积运算
+    int width_loop = Ptile_width - 2;
+    int height_loop = Ptile_height - 2;
+    for (int i = 0; i < height_loop; i++) {
+        for (int j = 0; j < width_loop; j++) {
+            kernel_out_buffer[i * tile_width + j] = 0;
+            for (int x = 0; x < 3; x++) {
+                for (int y = 0; y < 3; y++) {
+                    kernel_out_buffer[i * tile_width + j] += kernel[x * 3 + y] * Pkernel[(i + x) * Ptile_width + j + y];
+                }
+            }
+        }
+    }
+
+	free(Pkernel);
+}
 
 int main(int argc, char** argv) {
     if (argc < 2) {
@@ -89,10 +137,14 @@ int main(int argc, char** argv) {
     auto *DataInput = new int [img_num_elements];
 
     auto *DataOutput = new int [img_num_elements];
+    auto *DataOutput_ref = new int [img_num_elements];
 
     for (unsigned int i = 0; i < img_num_elements; i++) {
         DataInput[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
     }
+
+    int kernel_coeff[16] = {64, 128, 64, 128, 256, 128, 64, 128, 64};
+    kernel_cal(DataInput, img_width, img_height, kernel_coeff, DataOutput_ref);
 
     img_in_buff.write(DataInput);
 
@@ -152,6 +204,15 @@ int main(int argc, char** argv) {
     // Read output buffer data to local buffer
     img_out_buff.read(DataOutput);
 
+    int erro = 0;
+    for (int i = 0; i < img_num_element; i++) {
+        if (abs(DataOutput[i] - DataOutput_ref[i]) > 1e-3) {
+            erro++;
+        }
+    }
+    printf("erro time: %d\n", erro);
+
+
     std::cout << "Writing data to output file" << std::endl;
     std::ofstream outputfile;
     outputfile.open("build.hw/aie_hw_run_data/output.txt");
@@ -159,6 +220,10 @@ int main(int argc, char** argv) {
         outputfile << DataOutput[i] << std::endl;
     }
     outputfile.close();
+
+    delete [] DataInput;
+    delete [] DataOutput;
+    delete [] DataOutput_ref;
 
     return 0;
 }
