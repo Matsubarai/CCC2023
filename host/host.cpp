@@ -174,8 +174,8 @@ int main(int argc, char** argv) {
     std::cout << "Run the tile PL" << std::endl;
     auto run_tile_mm2mm_1 = tile_mm2mm_1(
 	    img_in_buffer, 
-	    in_buffer_0, in_buffer_1, in_buffer_2, in_buffer_3, in_buffer_4,
-	    in_buffer_5, in_buffer_6);
+	    tiled_in_buffer_0, tiled_in_buffer_1, tiled_in_buffer_2, tiled_in_buffer_3, tiled_in_buffer_4,
+	    tiled_in_buffer_5, tiled_in_buffer_6);
     run_tile_mm2mm_1.wait();
 
     std::cout << "Copy tiled_in_buffer_ to in_buffer_" << std::endl;
@@ -250,8 +250,8 @@ int main(int argc, char** argv) {
 
     std::cout << "Run the sticker PL" << std::endl;
     auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
-	    out_buffer_0, out_buffer_1, out_buffer_2, out_buffer_3, out_buffer_4,
-	    out_buffer_5, out_buffer_6, 
+	    tiled_out_buffer_0, tiled_out_buffer_1, tiled_out_buffer_2, tiled_out_buffer_3, tiled_out_buffer_4,
+	    tiled_out_buffer_5, tiled_out_buffer_6, 
 	    img_out_buffer);
     run_sticker_mm2mm_1.wait();
 
