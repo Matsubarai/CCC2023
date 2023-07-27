@@ -28,7 +28,7 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
             for (unsigned k = 0; k < tile_num_width; k++) {
 
                 // 当前的 tile 应该传输给第 aie_index 个 aie kernel
-                unsigned aie_index = (j * tile_num_width + k) % AIE_KERNEL_NUMBER + 1;
+                unsigned aie_index = (j * tile_num_width + k) % AIE_KERNEL_NUMBER;
                 
                 // 当前 tile 相对于第一个元素的偏移
                 unsigned offset_width  = k * (tile_width - 2);
@@ -57,43 +57,43 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
 
                         // 将分块好的数据存入对应 aie 所读取的 mem 区域
                         switch(aie_index) {
-                            case 1:
+                            case 0:
                                 if (mem_in_index == -1)
                                     mem_out1[count[aie_index]++] = 0;
                                 else 
                                     mem_out1[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
-                            case 2:
+                            case 1:
                                 if (mem_in_index == -1)
                                     mem_out2[count[aie_index]++] = 0;
                                 else 
                                     mem_out2[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
-                            case 3:
+                            case 2:
                                 if (mem_in_index == -1)
                                     mem_out3[count[aie_index]++] = 0;
                                 else 
                                     mem_out3[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
-                            case 4:
+                            case 3:
                                 if (mem_in_index == -1)
                                     mem_out4[count[aie_index]++] = 0;
                                 else 
                                     mem_out4[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
-                            case 5:
+                            case 4:
                                 if (mem_in_index == -1)
                                     mem_out5[count[aie_index]++] = 0;
                                 else 
                                     mem_out5[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
-                            case 6:
+                            case 5:
                                 if (mem_in_index == -1)
                                     mem_out6[count[aie_index]++] = 0;
                                 else 
                                     mem_out6[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
-                            case 7:
+                            case 6:
                                 if (mem_in_index == -1)
                                     mem_out7[count[aie_index]++] = 0;
                                 else 
