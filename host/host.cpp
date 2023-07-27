@@ -38,21 +38,21 @@ int main(int argc, char** argv) {
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1    = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sticker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
-    auto mm2s_0 = xrt::kernel(device, uuid, "mm2s:{mm2s0}");
-    auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
-    auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
-    auto mm2s_3 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
-    auto mm2s_4 = xrt::kernel(device, uuid, "mm2s:{mm2s4}");
-    auto mm2s_5 = xrt::kernel(device, uuid, "mm2s:{mm2s5}");
-    auto mm2s_6 = xrt::kernel(device, uuid, "mm2s:{mm2s6}");
+    auto mm2s_0 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
+    auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
+    auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
+    auto mm2s_3 = xrt::kernel(device, uuid, "mm2s:{mm2s4}");
+    auto mm2s_4 = xrt::kernel(device, uuid, "mm2s:{mm2s5}");
+    auto mm2s_5 = xrt::kernel(device, uuid, "mm2s:{mm2s6}");
+    auto mm2s_6 = xrt::kernel(device, uuid, "mm2s:{mm2s7}");
 
-    auto s2mm_0 = xrt::kernel(device, uuid, "s2mm:{s2mm0}");
-    auto s2mm_1 = xrt::kernel(device, uuid, "s2mm:{s2mm1}");
-    auto s2mm_2 = xrt::kernel(device, uuid, "s2mm:{s2mm2}");
-    auto s2mm_3 = xrt::kernel(device, uuid, "s2mm:{s2mm3}");
-    auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm4}");
-    auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
-    auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
+    auto s2mm_0 = xrt::kernel(device, uuid, "s2mm:{s2mm1}");
+    auto s2mm_1 = xrt::kernel(device, uuid, "s2mm:{s2mm2}");
+    auto s2mm_2 = xrt::kernel(device, uuid, "s2mm:{s2mm3}");
+    auto s2mm_3 = xrt::kernel(device, uuid, "s2mm:{s2mm4}");
+    auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
+    auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
+    auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm7}");
     /////////////////////////////////////////////////
     // Allocating Buffer in Global Memory
     /////////////////////////////////////////////////
