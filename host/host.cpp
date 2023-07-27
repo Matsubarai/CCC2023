@@ -84,25 +84,25 @@ int main(int argc, char** argv) {
     // img_in_buffer ---(PL)---> tiled_in_buffer_
     // std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buffer_;
 
-    tiled_in_buffer_0 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    tiled_in_buffer_1 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    tiled_in_buffer_2 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    tiled_in_buffer_3 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    tiled_in_buffer_4 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    tiled_in_buffer_5 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    tiled_in_buffer_6 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_0 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_1 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_2 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_3 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_4 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_5 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_6 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
 
     
     // 用来存储 aie kernel 的输入数据
     // tiled_in_buffer ---(copy)---> in_buffer_
     // std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buffer_;
-    in_buffer_0 = xrt::bo(device, tile_size_in_bytes, mm2s_[0].group_id(0));
-    in_buffer_1 = xrt::bo(device, tile_size_in_bytes, mm2s_[1].group_id(0));
-    in_buffer_2 = xrt::bo(device, tile_size_in_bytes, mm2s_[2].group_id(0));
-    in_buffer_3 = xrt::bo(device, tile_size_in_bytes, mm2s_[3].group_id(0));
-    in_buffer_4 = xrt::bo(device, tile_size_in_bytes, mm2s_[4].group_id(0));
-    in_buffer_5 = xrt::bo(device, tile_size_in_bytes, mm2s_[5].group_id(0));
-    in_buffer_6 = xrt::bo(device, tile_size_in_bytes, mm2s_[6].group_id(0));
+    auto in_buffer_0 = xrt::bo(device, tile_size_in_bytes, mm2s_[0].group_id(0));
+    auto in_buffer_1 = xrt::bo(device, tile_size_in_bytes, mm2s_[1].group_id(0));
+    auto in_buffer_2 = xrt::bo(device, tile_size_in_bytes, mm2s_[2].group_id(0));
+    auto in_buffer_3 = xrt::bo(device, tile_size_in_bytes, mm2s_[3].group_id(0));
+    auto in_buffer_4 = xrt::bo(device, tile_size_in_bytes, mm2s_[4].group_id(0));
+    auto in_buffer_5 = xrt::bo(device, tile_size_in_bytes, mm2s_[5].group_id(0));
+    auto in_buffer_6 = xrt::bo(device, tile_size_in_bytes, mm2s_[6].group_id(0));
 
     // 用于存储 aie kernel 的计算结果
     // in_buffer_ ---(aie kernel)---> out_buffer_
