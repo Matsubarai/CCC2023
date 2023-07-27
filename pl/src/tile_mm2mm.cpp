@@ -10,25 +10,27 @@ ap_int<DWIDTH> *mem_out1, ap_int<DWIDTH> *mem_out2, ap_int<DWIDTH> *mem_out3, ap
 ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
 
 
-    // 计算一张图片有多少 tile
-    unsigned tile_num_width  = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
-    unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
+    // 每张图片的 tile 个数（width 和 height 两个维度）
+    unsigned tile_width_number  = ceil((float)(img_width  - tile_width)  / (tile_width  - 2)) + 1;
+    unsigned tile_height_number = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
 
+    // 用作每个 mem_out 的索引
     unsigned count[AIE_KERNEL_NUMBER] = {0};
+    // 用作 mem_in 的索引
     int mem_in_index;
-    // unsigned mem_out_index;
 
     // 遍历所有图片
     for (unsigned i = 0; i < img_number; i++) {
 
+        // 已经处理过的图片对应的元素个数
         unsigned offset_img = i * img_width * img_height;
 
         // 遍历所有的 tile
-        for (unsigned j = 0; j < tile_num_height; j++) {
-            for (unsigned k = 0; k < tile_num_width; k++) {
+        for (unsigned j = 0; j < tile_height_number; j++) {
+            for (unsigned k = 0; k < tile_width_number; k++) {
 
                 // 当前的 tile 应该传输给第 aie_index 个 aie kernel
-                unsigned aie_index = (j * tile_num_width + k) % AIE_KERNEL_NUMBER;
+                unsigned aie_index = (j * tile_width_number + k) % AIE_KERNEL_NUMBER;
                 
                 // 当前 tile 相对于第一个元素的偏移
                 unsigned offset_width  = k * (tile_width - 2);
