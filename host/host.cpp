@@ -84,13 +84,13 @@ int main(int argc, char** argv) {
     // img_in_buffer ---(PL)---> tiled_in_buffer_
     // std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buffer_;
 
-    auto tiled_in_buffer_0 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    auto tiled_in_buffer_1 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    auto tiled_in_buffer_2 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    auto tiled_in_buffer_3 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    auto tiled_in_buffer_4 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    auto tiled_in_buffer_5 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    auto tiled_in_buffer_6 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    auto tiled_in_buffer_0 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(1));
+    auto tiled_in_buffer_1 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(2));
+    auto tiled_in_buffer_2 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(3));
+    auto tiled_in_buffer_3 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(4));
+    auto tiled_in_buffer_4 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(5));
+    auto tiled_in_buffer_5 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(6));
+    auto tiled_in_buffer_6 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(7));
 
     
     // 用来存储 aie kernel 的输入数据
@@ -115,13 +115,13 @@ int main(int argc, char** argv) {
     // out_buffer ---(copy)---> tiled_out_buffer_
     std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_out_buffer_;
     for (unsigned i = 0; i < tiled_out_buffer_.size(); i++) {
-        tiled_out_buffer_[i] = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(0));
+        tiled_out_buffer_[i] = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(i));
     }
 
     // 用来存储最后的计算结果
     // tiled_out_buffer_ ---(PL)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
-    auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(0));
+    auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(7));
 
     /////////////////////////////////////////////////
     // Read data from file 
