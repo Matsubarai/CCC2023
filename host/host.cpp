@@ -38,6 +38,7 @@ int main(int argc, char** argv) {
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1    = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sticker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
+
     auto mm2s_0 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
     auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
     auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
@@ -53,6 +54,7 @@ int main(int argc, char** argv) {
     auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
     auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
     auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm7}");
+
     /////////////////////////////////////////////////
     // Allocating Buffer in Global Memory
     /////////////////////////////////////////////////
@@ -84,13 +86,8 @@ int main(int argc, char** argv) {
     // host mem ------> device mem (img_in_buffer)
     auto img_in_buffer = xrt::bo(device, img_size_in_bytes, tile_mm2mm_1.group_id(0));
 
-    // 用来存储 PL tile 之后的分块数据
-    // img_in_buffer ---(PL)---> tiled_in_buffer_
-    // std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buffer_;
-
-    // 用来存储 aie kernel 的输入数据
-    // tiled_in_buffer ---(copy)---> in_buffer_
-    // std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buffer_;
+    // 用来存储 PL tile 之后的分块数据，此数据也是 aie kernel 的输入数据
+    // img_in_buffer ---(PL:tile_mm2mm_1)---> in_buffer_
     auto in_buffer_0 = xrt::bo(device, tile_size_in_bytes, mm2s_0.group_id(0));
     auto in_buffer_1 = xrt::bo(device, tile_size_in_bytes, mm2s_1.group_id(0));
     auto in_buffer_2 = xrt::bo(device, tile_size_in_bytes, mm2s_2.group_id(0));
@@ -100,7 +97,7 @@ int main(int argc, char** argv) {
     auto in_buffer_6 = xrt::bo(device, tile_size_in_bytes, mm2s_6.group_id(0));
 
     // 用于存储 aie kernel 的计算结果
-    // in_buffer_ ---(aie kernel)---> out_buffer_
+    // in_buffer_ ---(PL:mm2s_)---> aie kernel ---(PL:s2mm_)---> out_buffer_
     auto out_buffer_0 = xrt::bo(device, tile_size_in_bytes, s2mm_0.group_id(0));
     auto out_buffer_1 = xrt::bo(device, tile_size_in_bytes, s2mm_1.group_id(0));
     auto out_buffer_2 = xrt::bo(device, tile_size_in_bytes, s2mm_2.group_id(0));
@@ -110,7 +107,7 @@ int main(int argc, char** argv) {
     auto out_buffer_6 = xrt::bo(device, tile_size_in_bytes, s2mm_6.group_id(0));
     
     // 用来存储最后的计算结果
-    // tiled_out_buffer_ ---(PL)---> img_out_buffer
+    // tiled_out_buffer_ ---(PL:sticker_mm2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
     auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(7));
 
