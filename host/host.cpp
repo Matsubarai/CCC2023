@@ -29,37 +29,48 @@ int main(int argc, char** argv) {
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1 = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sitcker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
-    auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
-    auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
-    auto mm2s_3 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
-    auto mm2s_4 = xrt::kernel(device, uuid, "mm2s:{mm2s4}");
-    auto mm2s_5 = xrt::kernel(device, uuid, "mm2s:{mm2s5}");
-    auto mm2s_6 = xrt::kernel(device, uuid, "mm2s:{mm2s6}");
-    auto mm2s_7 = xrt::kernel(device, uuid, "mm2s:{mm2s7}");
-    auto mm2s_8 = xrt::kernel(device, uuid, "mm2s:{mm2s8}");
-    auto mm2s_9 = xrt::kernel(device, uuid, "mm2s:{mm2s9}");
-    auto mm2s_10 = xrt::kernel(device, uuid, "mm2s:{mm2s10}");
-    auto mm2s_11 = xrt::kernel(device, uuid, "mm2s:{mm2s11}");
-    auto mm2s_12 = xrt::kernel(device, uuid, "mm2s:{mm2s12}");
-    auto mm2s_13 = xrt::kernel(device, uuid, "mm2s:{mm2s13}");
-    auto mm2s_14 = xrt::kernel(device, uuid, "mm2s:{mm2s14}");
-    auto mm2s_15 = xrt::kernel(device, uuid, "mm2s:{mm2s15}");
+    unsigned aie_kernel_number = 15;
+    std::array<xrt::kernel, aie_kernel_number> mm2s_;
+    std::array<xrt::kernel, aie_kernel_number> s2mm_;
+    for (unsigned i = 0; i < mm2s_.size(); ++i) {
+        std::string cu_name = "mm2s:{mm2s" + std::to_string(i+1) + "}";
+        mm2s_[i] = xrt::kernel(device, uuid, cu_name.c_str());
+    }
+    for (unsigned i = 0; i < s2mm_.size(); ++i) {
+        std::string cu_name = "s2mm:{s2mm" + std::to_string(i+1) + "}";
+        s2mm_[i] = xrt::kernel(device, uuid, cu_name.c_str());
+    }
+    // auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
+    // auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
+    // auto mm2s_3 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
+    // auto mm2s_4 = xrt::kernel(device, uuid, "mm2s:{mm2s4}");
+    // auto mm2s_5 = xrt::kernel(device, uuid, "mm2s:{mm2s5}");
+    // auto mm2s_6 = xrt::kernel(device, uuid, "mm2s:{mm2s6}");
+    // auto mm2s_7 = xrt::kernel(device, uuid, "mm2s:{mm2s7}");
+    // auto mm2s_8 = xrt::kernel(device, uuid, "mm2s:{mm2s8}");
+    // auto mm2s_9 = xrt::kernel(device, uuid, "mm2s:{mm2s9}");
+    // auto mm2s_10 = xrt::kernel(device, uuid, "mm2s:{mm2s10}");
+    // auto mm2s_11 = xrt::kernel(device, uuid, "mm2s:{mm2s11}");
+    // auto mm2s_12 = xrt::kernel(device, uuid, "mm2s:{mm2s12}");
+    // auto mm2s_13 = xrt::kernel(device, uuid, "mm2s:{mm2s13}");
+    // auto mm2s_14 = xrt::kernel(device, uuid, "mm2s:{mm2s14}");
+    // auto mm2s_15 = xrt::kernel(device, uuid, "mm2s:{mm2s15}");
 
-    auto s2mm_1 = xrt::kernel(device, uuid, "s2mm:{s2mm1}");
-    auto s2mm_2 = xrt::kernel(device, uuid, "s2mm:{s2mm2}");
-    auto s2mm_3 = xrt::kernel(device, uuid, "s2mm:{s2mm3}");
-    auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm4}");
-    auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
-    auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
-    auto s2mm_7 = xrt::kernel(device, uuid, "s2mm:{s2mm7}");
-    auto s2mm_8 = xrt::kernel(device, uuid, "s2mm:{s2mm8}");
-    auto s2mm_9 = xrt::kernel(device, uuid, "s2mm:{s2mm9}");
-    auto s2mm_10 = xrt::kernel(device, uuid, "s2mm:{s2mm10}");
-    auto s2mm_11 = xrt::kernel(device, uuid, "s2mm:{s2mm11}");
-    auto s2mm_12 = xrt::kernel(device, uuid, "s2mm:{s2mm12}");
-    auto s2mm_13 = xrt::kernel(device, uuid, "s2mm:{s2mm13}");
-    auto s2mm_14 = xrt::kernel(device, uuid, "s2mm:{s2mm14}");
-    auto s2mm_15 = xrt::kernel(device, uuid, "s2mm:{s2mm15}");
+    // auto s2mm_1 = xrt::kernel(device, uuid, "s2mm:{s2mm1}");
+    // auto s2mm_2 = xrt::kernel(device, uuid, "s2mm:{s2mm2}");
+    // auto s2mm_3 = xrt::kernel(device, uuid, "s2mm:{s2mm3}");
+    // auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm4}");
+    // auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
+    // auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
+    // auto s2mm_7 = xrt::kernel(device, uuid, "s2mm:{s2mm7}");
+    // auto s2mm_8 = xrt::kernel(device, uuid, "s2mm:{s2mm8}");
+    // auto s2mm_9 = xrt::kernel(device, uuid, "s2mm:{s2mm9}");
+    // auto s2mm_10 = xrt::kernel(device, uuid, "s2mm:{s2mm10}");
+    // auto s2mm_11 = xrt::kernel(device, uuid, "s2mm:{s2mm11}");
+    // auto s2mm_12 = xrt::kernel(device, uuid, "s2mm:{s2mm12}");
+    // auto s2mm_13 = xrt::kernel(device, uuid, "s2mm:{s2mm13}");
+    // auto s2mm_14 = xrt::kernel(device, uuid, "s2mm:{s2mm14}");
+    // auto s2mm_15 = xrt::kernel(device, uuid, "s2mm:{s2mm15}");
 
     // Allocating the input size of sizeIn to MM2S
     std::cout << "Allocate Buffer in Global Memory" << std::endl;
@@ -70,7 +81,6 @@ int main(int argc, char** argv) {
 
     unsigned tile_width = 64;
     unsigned tile_height       = 32;
-    unsigned aie_kernel_number = 15;
 
     unsigned tile_num_width = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
 	unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
