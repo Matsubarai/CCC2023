@@ -40,19 +40,15 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
                 for (unsigned th = 0; th < tile_height; th++) {
                     for (unsigned tw = 0; tw < tile_width; tw++) {
                         
-                        // 判断是否遍历到图片边缘
-                        bool edge_flag_width  = ((tw + offset_width)  == (img_width));
-                        bool edge_flag_height = ((th + offset_height) == (img_height));
-
                         // 遍历到图片边缘后需要进行 padding 操作 
                         // mem_in_index == -1 表示补零
-                        if (!edge_flag_height && !edge_flag_width)
-                            mem_in_index = (th + offset_height) * img_width + tw + offset_width + offset_img;                        
-                        else if (edge_flag_height && !edge_flag_width)
-                            mem_in_index = (img_height - 1) * img_width + tw + offset_width + offset_img;
-                        else if (!edge_flag_height && edge_flag_width)
-                            mem_in_index = (th + offset_height) * img_width + img_width - 1 + offset_img;
-                        else if (edge_flag_height && edge_flag_width)
+                        if ((ti + offset_height < img_height) && (tj + offset_width < img_width))
+                            mem_in_index = (ti + offset_height) * img_width + tj + offset_width + offset_img;
+                        else if ((ti + offset_height == img_height) && (tj + offset_width < img_width))
+                            mem_in_index = (img_height - 1) * img_width + tj + offset_width + offset_img;
+                        else if ((ti + offset_height < img_height) && (tj + offset_width == img_width))
+                            mem_in_index = (ti + offset_height) * img_width + img_width - 1 + offset_img;
+                        else if ((ti + offset_height == img_height) && (tj + offset_width == img_width))
                             mem_in_index = (img_height - 1) * img_width + img_width - 1 + offset_img;
                         else
                             mem_in_index = -1;
