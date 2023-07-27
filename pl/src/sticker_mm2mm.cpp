@@ -52,8 +52,8 @@ ap_int<data_width> *mem_out) {
                         for (int j = 0; j < tile_width - 1; j++) {
 
                             mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                             count, aie_index, mem_out_index);
                         }
                     }
@@ -64,8 +64,8 @@ ap_int<data_width> *mem_out) {
                         for (int j = 1; j < tile_width - 1; j++) {
 
                             mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                             count, aie_index, mem_out_index);
 
                         }
@@ -77,8 +77,8 @@ ap_int<data_width> *mem_out) {
                         for (int j = 0; j < tile_width - 1; j++) {
 
                             mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                             count, aie_index, mem_out_index);
 
                         }
@@ -90,8 +90,8 @@ ap_int<data_width> *mem_out) {
                         for (int j = 1; j < tile_width - 1; j++) {
                             
                             mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                            sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                            mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                             count, aie_index, mem_out_index);
 
                         }
@@ -104,8 +104,8 @@ ap_int<data_width> *mem_out) {
                             if (j + offset_width < img_width) {
                                 
                                 mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                                 count, aie_index, mem_out_index);
                             
                             }    
@@ -119,8 +119,8 @@ ap_int<data_width> *mem_out) {
                             if (j + offset_width < img_width) {
 
                                 mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                                 count, aie_index, mem_out_index);
 
                             }
@@ -134,8 +134,8 @@ ap_int<data_width> *mem_out) {
                             if (i + offset_height < img_height) {
 
                                 mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                                 count, aie_index, mem_out_index);
 
                             }
@@ -149,8 +149,8 @@ ap_int<data_width> *mem_out) {
                             if (i + offset_height < img_height) {
 
                                 mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                                 count, aie_index, mem_out_index);
 
                             }
@@ -164,8 +164,8 @@ ap_int<data_width> *mem_out) {
                             if ((i + offset_height < img_height) && (j + offset_width < img_width)) {
 
                                 mem_out_index = (i + offset_height) * img_width + j + offset_width + offset_img;
-                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9
-                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out
+                                sticker_mmtransfer<data_width>(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_in8, mem_in9,
+                                                                mem_in10, mem_in11, mem_in12, mem_in13, mem_in14, mem_in15, mem_out,
                                                                 count, aie_index, mem_out_index);
 
                             }
