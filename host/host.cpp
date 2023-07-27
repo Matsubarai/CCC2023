@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     // Get reference to the kernels
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1 = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
-    auto sitcker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
+    auto sticker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
     std::array<xrt::kernel, AIE_KERNEL_NUMBER> mm2s_;
     std::array<xrt::kernel, AIE_KERNEL_NUMBER> s2mm_;
     for (unsigned i = 0; i < mm2s_.size(); ++i) {
@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 
     unsigned tile_width = 64;
     unsigned tile_height = 32;
-    unsigned data_width = 32;
+    // unsigned data_width = 32;
 
     unsigned tile_num_width = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
 	unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
     std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_out_buff_;
     for (unsigned i = 0; i < tiled_out_buff_.size(); ++i) {
-        tiled_out_buff_[i] = xrt:bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(i));
+        tiled_out_buff_[i] = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(i));
     }
 
     std::array<xrt::bo, AIE_KERNEL_NUMBER> out_buff_;
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
     run_tile_mm2mm_1.wait();
 
     for (unsigned i = 0; i < in_buff_.size(); ++i) {
-        in_buff_[i].copy(tile_in_buff_[i], tile_size_in_bytes);
+        in_buff_[i].copy(tiled_in_buff_[i], tile_size_in_bytes);
     }
 
     std::array<xrt::run, AIE_KERNEL_NUMBER> run_s2mm_;
