@@ -14,7 +14,7 @@ unsigned count[15], unsigned aie_index, unsigned mem_out_index);
 
 // 将当前横纵坐标对应的 tile 拼接到图片中
 template <unsigned img_width, unsigned img_height, unsigned img_number, unsigned tile_width, unsigned tile_height, unsigned aie_kernel_num, unsigned data_width>
-void sticker(ap_int<data_width> *mem_in1, ap_int<data_width> *mem_in2, ap_int<data_width> *mem_in3, ap_int<data_width> *mem_in4, ap_int<data_width> *mem_in5,
+void sticker_mm2mm(ap_int<data_width> *mem_in1, ap_int<data_width> *mem_in2, ap_int<data_width> *mem_in3, ap_int<data_width> *mem_in4, ap_int<data_width> *mem_in5,
 ap_int<data_width> *mem_in6, ap_int<data_width> *mem_in7, ap_int<data_width> *mem_in8, ap_int<data_width> *mem_in9, ap_int<data_width> *mem_in10, 
 ap_int<data_width> *mem_in11, ap_int<data_width> *mem_in12, ap_int<data_width> *mem_in13, ap_int<data_width> *mem_in14, ap_int<data_width> *mem_in15,
 ap_int<data_width> *mem_out) {
