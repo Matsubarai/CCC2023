@@ -59,93 +59,93 @@ ap_int<data_width> *mem_out11, ap_int<data_width> *mem_out12, ap_int<data_width>
                         switch(aie_index) {
                             case 1:
                                 if (mem_in_index = -1)
-                                    mem_out1[aie_index][count[aie_index]++] = 0;
+                                    mem_out1[count[aie_index]++] = 0;
                                 else 
-                                    mem_out1[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out1[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 2:
                                 if (mem_in_index = -1)
-                                    mem_out2[aie_index][count[aie_index]++] = 0;
+                                    mem_out2[count[aie_index]++] = 0;
                                 else 
-                                    mem_out2[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out2[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 3:
                                 if (mem_in_index = -1)
-                                    mem_out3[aie_index][count[aie_index]++] = 0;
+                                    mem_out3[count[aie_index]++] = 0;
                                 else 
-                                    mem_out3[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out3[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 4:
                                 if (mem_in_index = -1)
-                                    mem_out4[aie_index][count[aie_index]++] = 0;
+                                    mem_out4[count[aie_index]++] = 0;
                                 else 
-                                    mem_out4[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out4[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 5:
                                 if (mem_in_index = -1)
-                                    mem_out5[aie_index][count[aie_index]++] = 0;
+                                    mem_out5[count[aie_index]++] = 0;
                                 else 
-                                    mem_out5[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out5[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 6:
                                 if (mem_in_index = -1)
-                                    mem_out6[aie_index][count[aie_index]++] = 0;
+                                    mem_out6[count[aie_index]++] = 0;
                                 else 
-                                    mem_out6[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out6[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 7:
                                 if (mem_in_index = -1)
-                                    mem_out7[aie_index][count[aie_index]++] = 0;
+                                    mem_out7[count[aie_index]++] = 0;
                                 else 
-                                    mem_out7[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out7[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 8:
                                 if (mem_in_index = -1)
-                                    mem_out8[aie_index][count[aie_index]++] = 0;
+                                    mem_out8[count[aie_index]++] = 0;
                                 else 
-                                    mem_out8[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out8[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 9:
                                 if (mem_in_index = -1)
-                                    mem_out9[aie_index][count[aie_index]++] = 0;
+                                    mem_out9[count[aie_index]++] = 0;
                                 else 
-                                    mem_out9[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out9[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 10:
                                 if (mem_in_index = -1)
-                                    mem_out10[aie_index][count[aie_index]++] = 0;
+                                    mem_out10[count[aie_index]++] = 0;
                                 else 
-                                    mem_out10[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out10[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 11:
                                 if (mem_in_index = -1)
-                                    mem_out11[aie_index][count[aie_index]++] = 0;
+                                    mem_out11[count[aie_index]++] = 0;
                                 else 
-                                    mem_out11[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out11[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 12:
                                 if (mem_in_index = -1)
-                                    mem_out12[aie_index][count[aie_index]++] = 0;
+                                    mem_out12[count[aie_index]++] = 0;
                                 else 
-                                    mem_out12[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out12[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 13:
                                 if (mem_in_index = -1)
-                                    mem_out13[aie_index][count[aie_index]++] = 0;
+                                    mem_out13[count[aie_index]++] = 0;
                                 else 
-                                    mem_out13[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out13[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 14:
                                 if (mem_in_index = -1)
-                                    mem_out14[aie_index][count[aie_index]++] = 0;
+                                    mem_out14[count[aie_index]++] = 0;
                                 else 
-                                    mem_out14[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out14[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             case 15:
                                 if (mem_in_index = -1)
-                                    mem_out15[aie_index][count[aie_index]++] = 0;
+                                    mem_out15[count[aie_index]++] = 0;
                                 else 
-                                    mem_out15[aie_index][count[aie_index]++] = mem_in[mem_in_index];
+                                    mem_out15[count[aie_index]++] = mem_in[mem_in_index];
                                 break;
                             default:
                                 printf("aie mem_in_index = %d\n", aie_index);
@@ -156,3 +156,109 @@ ap_int<data_width> *mem_out11, ap_int<data_width> *mem_out12, ap_int<data_width>
         }
     }
 }
+
+// template<unsigned data_width>
+// void mem_transfer(ap_int<data_width> *mem_in, 
+// ap_int<data_width> *mem_out1, ap_int<data_width> *mem_out2, ap_int<data_width> *mem_out3, ap_int<data_width> *mem_out4, 
+// ap_int<data_width> *mem_out5, ap_int<data_width> *mem_out6, ap_int<data_width> *mem_out7, ap_int<data_width> *mem_out8, ap_int<data_width> *mem_out9, ap_int<data_width> *mem_out10,
+// ap_int<data_width> *mem_out11, ap_int<data_width> *mem_out12, ap_int<data_width> *mem_out13, ap_int<data_width> *mem_out14, ap_int<data_width> *mem_out15) {
+
+//     switch(aie_index) {
+//         case 1:
+//             if (mem_in_index = -1)
+//                 mem_out1[count[aie_index]++] = 0;
+//             else 
+//                 mem_out1[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 2:
+//             if (mem_in_index = -1)
+//                 mem_out2[count[aie_index]++] = 0;
+//             else 
+//                 mem_out2[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 3:
+//             if (mem_in_index = -1)
+//                 mem_out3[count[aie_index]++] = 0;
+//             else 
+//                 mem_out3[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 4:
+//             if (mem_in_index = -1)
+//                 mem_out4[count[aie_index]++] = 0;
+//             else 
+//                 mem_out4[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 5:
+//             if (mem_in_index = -1)
+//                 mem_out5[count[aie_index]++] = 0;
+//             else 
+//                 mem_out5[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 6:
+//             if (mem_in_index = -1)
+//                 mem_out6[count[aie_index]++] = 0;
+//             else 
+//                 mem_out6[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 7:
+//             if (mem_in_index = -1)
+//                 mem_out7[count[aie_index]++] = 0;
+//             else 
+//                 mem_out7[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 8:
+//             if (mem_in_index = -1)
+//                 mem_out8[count[aie_index]++] = 0;
+//             else 
+//                 mem_out8[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 9:
+//             if (mem_in_index = -1)
+//                 mem_out9[count[aie_index]++] = 0;
+//             else 
+//                 mem_out9[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 10:
+//             if (mem_in_index = -1)
+//                 mem_out10[count[aie_index]++] = 0;
+//             else 
+//                 mem_out10[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 11:
+//             if (mem_in_index = -1)
+//                 mem_out11[count[aie_index]++] = 0;
+//             else 
+//                 mem_out11[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 12:
+//             if (mem_in_index = -1)
+//                 mem_out12[count[aie_index]++] = 0;
+//             else 
+//                 mem_out12[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 13:
+//             if (mem_in_index = -1)
+//                 mem_out13[count[aie_index]++] = 0;
+//             else 
+//                 mem_out13[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 14:
+//             if (mem_in_index = -1)
+//                 mem_out14[count[aie_index]++] = 0;
+//             else 
+//                 mem_out14[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         case 15:
+//             if (mem_in_index = -1)
+//                 mem_out15[count[aie_index]++] = 0;
+//             else 
+//                 mem_out15[count[aie_index]++] = mem_in[mem_in_index];
+//             break;
+//         default:
+//             printf("aie mem_in_index = %d\n", aie_index);
+//     }
+
+// }
+//     std::map<int, char> mem_out_map;
+//     struct
+//     *mem_out[15]
