@@ -2,13 +2,13 @@
 #include <ap_int.h>
 #include <hls_stream.h>
 #include <math.h>
+#include "config.h"
 
 // 对一张图片的指定位置进行 tile 操作
-template <unsigned img_width, unsigned img_height, unsigned img_number, unsigned tile_width, unsigned tile_height, unsigned aie_kernel_num, unsigned data_width>
-void tile_mm2mm(ap_int<data_width> *mem_in, 
-ap_int<data_width> *mem_out1, ap_int<data_width> *mem_out2, ap_int<data_width> *mem_out3, ap_int<data_width> *mem_out4, 
-ap_int<data_width> *mem_out5, ap_int<data_width> *mem_out6, ap_int<data_width> *mem_out7, ap_int<data_width> *mem_out8, ap_int<data_width> *mem_out9, ap_int<data_width> *mem_out10,
-ap_int<data_width> *mem_out11, ap_int<data_width> *mem_out12, ap_int<data_width> *mem_out13, ap_int<data_width> *mem_out14, ap_int<data_width> *mem_out15) {
+void tile_mm2mm(ap_int<DWIDTH> *mem_in, 
+ap_int<DWIDTH> *mem_out1, ap_int<DWIDTH> *mem_out2, ap_int<DWIDTH> *mem_out3, ap_int<DWIDTH> *mem_out4, 
+ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7, ap_int<DWIDTH> *mem_out8, ap_int<DWIDTH> *mem_out9, ap_int<DWIDTH> *mem_out10,
+ap_int<DWIDTH> *mem_out11, ap_int<DWIDTH> *mem_out12, ap_int<DWIDTH> *mem_out13, ap_int<DWIDTH> *mem_out14, ap_int<DWIDTH> *mem_out15) {
 
 
     // 计算一张图片有多少 tile
