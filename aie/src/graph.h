@@ -27,7 +27,7 @@ class Filter2DBlock : public graph {
 
 class TopGraph : public graph {
     public:
-        static constexpr unsigned num_input = 15, num_output = 15;
+        static constexpr unsigned num_input = 7, num_output = 7;
         std::array<input_plio, num_input> in;
         std::array<output_plio, num_output> out;
 
@@ -38,14 +38,14 @@ class TopGraph : public graph {
         Filter2DBlock<100> F05;
         Filter2DBlock<100> F06;
         Filter2DBlock<100> F07;
-        Filter2DBlock<100> F08;
-        Filter2DBlock<100> F09;
-        Filter2DBlock<100> F10;
-        Filter2DBlock<100> F11;
-        Filter2DBlock<100> F12;
-        Filter2DBlock<100> F13;
-        Filter2DBlock<100> F14;
-        Filter2DBlock<100> F15;
+        // Filter2DBlock<100> F08;
+        // Filter2DBlock<100> F09;
+        // Filter2DBlock<100> F10;
+        // Filter2DBlock<100> F11;
+        // Filter2DBlock<100> F12;
+        // Filter2DBlock<100> F13;
+        // Filter2DBlock<100> F14;
+        // Filter2DBlock<100> F15;
         // Filter2DBlock<100> F16;
         // Filter2DBlock<100> F17;
         // Filter2DBlock<100> F18;
@@ -82,14 +82,10 @@ class TopGraph : public graph {
         //                 "data/output17.txt", "data/output18.txt", "data/output19.txt", "data/output20.txt", "data/output21.txt", "data/output22.txt", "data/output23.txt", "data/output24.txt", 
         //                 "data/output25.txt", "data/output26.txt", "data/output27.txt", "data/output28.txt", "data/output29.txt", "data/output30.txt", "data/output31.txt", "data/output32.txt"}) {}
         TopGraph()
-            : TopGraph({"DataIn1", "DataIn2", "DataIn3", "DataIn4", "DataIn5", "DataIn6", "DataIn7", "DataIn8",
-                        "DataIn9", "DataIn10", "DataIn11", "DataIn12", "DataIn13", "DataIn14", "DataIn15"},
-                       {"data/input1.txt", "data/input2.txt", "data/input3.txt", "data/input4.txt", "data/input5.txt", "data/input6.txt", "data/input7.txt", "data/input8.txt", 
-                        "data/input9.txt", "data/input10.txt", "data/input11.txt", "data/input12.txt", "data/input13.txt", "data/input14.txt", "data/input15.txt"}, 
-                       {"DataOut1", "DataOut2", "DataOut3", "DataOut4", "DataOut5", "DataOut6", "DataOut7", "DataOut8",
-                        "DataOut9", "DataOut10", "DataOut11", "DataOut12", "DataOut13", "DataOut14", "DataOut15"}, 
-                       {"data/output1.txt", "data/output2.txt", "data/output3.txt", "data/output4.txt", "data/output5.txt", "data/output6.txt", "data/output7.txt", "data/output8.txt", 
-                        "data/output9.txt", "data/output10.txt", "data/output11.txt", "data/output12.txt", "data/output13.txt", "data/output14.txt", "data/output15.txt"}) {}
+            : TopGraph({"DataIn1", "DataIn2", "DataIn3", "DataIn4", "DataIn5", "DataIn6", "DataIn7"},
+                       {"data/input1.txt", "data/input2.txt", "data/input3.txt", "data/input4.txt", "data/input5.txt", "data/input6.txt", "data/input7.txt"}, 
+                       {"DataOut1", "DataOut2", "DataOut3", "DataOut4", "DataOut5", "DataOut6", "DataOut7"}, 
+                       {"data/output1.txt", "data/output2.txt", "data/output3.txt", "data/output4.txt", "data/output5.txt", "data/output6.txt", "data/output7.txt"}) {}
 
 
 
@@ -114,14 +110,14 @@ class TopGraph : public graph {
                         {in[4].out[0],  F05.din}, {F05.dout, out[4].in[0]}, 
                         {in[5].out[0],  F06.din}, {F06.dout, out[5].in[0]}, 
                         {in[6].out[0],  F07.din}, {F07.dout, out[6].in[0]}, 
-                        {in[7].out[0],  F08.din}, {F08.dout, out[7].in[0]}, 
-                        {in[8].out[0],  F09.din}, {F09.dout, out[8].in[0]}, 
-                        {in[9].out[0],  F10.din}, {F10.dout, out[9].in[0]}, 
-                        {in[10].out[0], F11.din}, {F11.dout, out[10].in[0]}, 
-                        {in[11].out[0], F12.din}, {F12.dout, out[11].in[0]}, 
-                        {in[12].out[0], F13.din}, {F13.dout, out[12].in[0]}, 
-                        {in[13].out[0], F14.din}, {F14.dout, out[13].in[0]}, 
-                        {in[14].out[0], F15.din}, {F15.dout, out[14].in[0]}, 
+                        // {in[7].out[0],  F08.din}, {F08.dout, out[7].in[0]}, 
+                        // {in[8].out[0],  F09.din}, {F09.dout, out[8].in[0]}, 
+                        // {in[9].out[0],  F10.din}, {F10.dout, out[9].in[0]}, 
+                        // {in[10].out[0], F11.din}, {F11.dout, out[10].in[0]}, 
+                        // {in[11].out[0], F12.din}, {F12.dout, out[11].in[0]}, 
+                        // {in[12].out[0], F13.din}, {F13.dout, out[12].in[0]}, 
+                        // {in[13].out[0], F14.din}, {F14.dout, out[13].in[0]}, 
+                        // {in[14].out[0], F15.din}, {F15.dout, out[14].in[0]}, 
                         // {in[15].out[0], F16.din}, {F16.dout, out[15].in[0]}, 
                         // {in[16].out[0], F17.din}, {F17.dout, out[16].in[0]}, 
                         // {in[17].out[0], F18.din}, {F18.dout, out[17].in[0]}, 
