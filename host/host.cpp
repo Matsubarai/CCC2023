@@ -49,7 +49,8 @@ int main(int argc, char** argv) {
     unsigned img_num_elements = img_width * img_height * img_number;
 
     unsigned tile_width = 64;
-    unsigned tile_height       = 32;
+    unsigned tile_height = 32;
+    unsigned data_width = 32;
 
     unsigned tile_num_width = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
 	unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
