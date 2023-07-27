@@ -31,7 +31,6 @@ int main(int argc, char** argv) {
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1 = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sitcker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
-    unsigned AIE_KERNEL_NUMBER = 15;
     std::array<xrt::kernel, AIE_KERNEL_NUMBER> mm2s_;
     std::array<xrt::kernel, AIE_KERNEL_NUMBER> s2mm_;
     for (unsigned i = 0; i < mm2s_.size(); ++i) {
