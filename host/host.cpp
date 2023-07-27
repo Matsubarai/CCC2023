@@ -38,17 +38,21 @@ int main(int argc, char** argv) {
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1    = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sticker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
-    std::array<xrt::kernel, AIE_KERNEL_NUMBER> mm2s_;
-    std::array<xrt::kernel, AIE_KERNEL_NUMBER> s2mm_;
-    for (unsigned i = 0; i < mm2s_.size(); ++i) {
-        std::string cu_name = "mm2s:{mm2s" + std::to_string(i+1) + "}";
-        mm2s_[i] = xrt::kernel(device, uuid, cu_name.c_str());
-    }
-    for (unsigned i = 0; i < s2mm_.size(); ++i) {
-        std::string cu_name = "s2mm:{s2mm" + std::to_string(i+1) + "}";
-        s2mm_[i] = xrt::kernel(device, uuid, cu_name.c_str());
-    }
+    auto mm2s_0 = xrt::kernel(device, uuid, "mm2s:{mm2s7}");
+    auto mm2s_1 = xrt::kernel(device, uuid, "mm2s:{mm2s1}");
+    auto mm2s_2 = xrt::kernel(device, uuid, "mm2s:{mm2s2}");
+    auto mm2s_3 = xrt::kernel(device, uuid, "mm2s:{mm2s3}");
+    auto mm2s_4 = xrt::kernel(device, uuid, "mm2s:{mm2s4}");
+    auto mm2s_5 = xrt::kernel(device, uuid, "mm2s:{mm2s5}");
+    auto mm2s_6 = xrt::kernel(device, uuid, "mm2s:{mm2s6}");
 
+    auto s2mm_0 = xrt::kernel(device, uuid, "s2mm:{s2mm7}");
+    auto s2mm_1 = xrt::kernel(device, uuid, "s2mm:{s2mm1}");
+    auto s2mm_2 = xrt::kernel(device, uuid, "s2mm:{s2mm2}");
+    auto s2mm_3 = xrt::kernel(device, uuid, "s2mm:{s2mm3}");
+    auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm4}");
+    auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
+    auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
     /////////////////////////////////////////////////
     // Allocating Buffer in Global Memory
     /////////////////////////////////////////////////
@@ -96,27 +100,35 @@ int main(int argc, char** argv) {
     // 用来存储 aie kernel 的输入数据
     // tiled_in_buffer ---(copy)---> in_buffer_
     // std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buffer_;
-    auto in_buffer_0 = xrt::bo(device, tile_size_in_bytes, mm2s_[0].group_id(0));
-    auto in_buffer_1 = xrt::bo(device, tile_size_in_bytes, mm2s_[1].group_id(0));
-    auto in_buffer_2 = xrt::bo(device, tile_size_in_bytes, mm2s_[2].group_id(0));
-    auto in_buffer_3 = xrt::bo(device, tile_size_in_bytes, mm2s_[3].group_id(0));
-    auto in_buffer_4 = xrt::bo(device, tile_size_in_bytes, mm2s_[4].group_id(0));
-    auto in_buffer_5 = xrt::bo(device, tile_size_in_bytes, mm2s_[5].group_id(0));
-    auto in_buffer_6 = xrt::bo(device, tile_size_in_bytes, mm2s_[6].group_id(0));
+    auto in_buffer_0 = xrt::bo(device, tile_size_in_bytes, mm2s_0.group_id(0));
+    auto in_buffer_1 = xrt::bo(device, tile_size_in_bytes, mm2s_1.group_id(0));
+    auto in_buffer_2 = xrt::bo(device, tile_size_in_bytes, mm2s_2.group_id(0));
+    auto in_buffer_3 = xrt::bo(device, tile_size_in_bytes, mm2s_3.group_id(0));
+    auto in_buffer_4 = xrt::bo(device, tile_size_in_bytes, mm2s_4.group_id(0));
+    auto in_buffer_5 = xrt::bo(device, tile_size_in_bytes, mm2s_5.group_id(0));
+    auto in_buffer_6 = xrt::bo(device, tile_size_in_bytes, mm2s_6.group_id(0));
 
     // 用于存储 aie kernel 的计算结果
     // in_buffer_ ---(aie kernel)---> out_buffer_
-    std::array<xrt::bo, AIE_KERNEL_NUMBER> out_buffer_;
-    for (unsigned i = 0; i < out_buffer_.size(); i++) {
-        out_buffer_[i] = xrt::bo(device, tile_size_in_bytes, s2mm_[i].group_id(0));
-    }
+    auto out_buffer_0 = xrt::bo(device, tile_size_in_bytes, s2mm_0.group_id(0));
+    auto out_buffer_1 = xrt::bo(device, tile_size_in_bytes, s2mm_1.group_id(0));
+    auto out_buffer_2 = xrt::bo(device, tile_size_in_bytes, s2mm_2.group_id(0));
+    auto out_buffer_3 = xrt::bo(device, tile_size_in_bytes, s2mm_3.group_id(0));
+    auto out_buffer_4 = xrt::bo(device, tile_size_in_bytes, s2mm_4.group_id(0));
+    auto out_buffer_5 = xrt::bo(device, tile_size_in_bytes, s2mm_5.group_id(0));
+    auto out_buffer_6 = xrt::bo(device, tile_size_in_bytes, s2mm_6.group_id(0));
+
     
     // 用来存储 PL sticker 的输入数据
     // out_buffer ---(copy)---> tiled_out_buffer_
-    std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_out_buffer_;
-    for (unsigned i = 0; i < tiled_out_buffer_.size(); i++) {
-        tiled_out_buffer_[i] = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(i));
-    }
+    auto tiled_out_buffer_0 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(0));
+    auto tiled_out_buffer_1 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(1));
+    auto tiled_out_buffer_2 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(2));
+    auto tiled_out_buffer_3 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(3));
+    auto tiled_out_buffer_4 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(4));
+    auto tiled_out_buffer_5 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(5));
+    auto tiled_out_buffer_6 = xrt::bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(6));
+
 
     // 用来存储最后的计算结果
     // tiled_out_buffer_ ---(PL)---> img_out_buffer
@@ -177,42 +189,69 @@ int main(int argc, char** argv) {
 
 
     std::cout << "Run the s2mm PL" << std::endl;
-    std::array<xrt::run, AIE_KERNEL_NUMBER> run_s2mm_;
-    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
-        run_s2mm_[i] = s2mm_[i](out_buffer_[i], nullptr, tile_size_in_bytes);
-    }
+    auto run_s2mm_0 = s2mm_0(out_buffer_0, nullptr, tile_size_in_bytes);
+    auto run_s2mm_1 = s2mm_1(out_buffer_1, nullptr, tile_size_in_bytes);
+    auto run_s2mm_2 = s2mm_2(out_buffer_2, nullptr, tile_size_in_bytes);
+    auto run_s2mm_3 = s2mm_3(out_buffer_3, nullptr, tile_size_in_bytes);
+    auto run_s2mm_4 = s2mm_4(out_buffer_4, nullptr, tile_size_in_bytes);
+    auto run_s2mm_5 = s2mm_5(out_buffer_5, nullptr, tile_size_in_bytes);
+    auto run_s2mm_6 = s2mm_6(out_buffer_6, nullptr, tile_size_in_bytes);
+
     
     std::cout << "Run the mm2s PL" << std::endl;
-    std::array<xrt::run, AIE_KERNEL_NUMBER> run_mm2s_;
-
-    run_mm2s_[0] = mm2s_[0](in_buffer_0, nullptr, tile_size_in_bytes);
-    run_mm2s_[1] = mm2s_[1](in_buffer_1, nullptr, tile_size_in_bytes);
-    run_mm2s_[2] = mm2s_[2](in_buffer_2, nullptr, tile_size_in_bytes);
-    run_mm2s_[3] = mm2s_[3](in_buffer_3, nullptr, tile_size_in_bytes);
-    run_mm2s_[4] = mm2s_[4](in_buffer_4, nullptr, tile_size_in_bytes);
-    run_mm2s_[5] = mm2s_[5](in_buffer_5, nullptr, tile_size_in_bytes);
-    run_mm2s_[6] = mm2s_[6](in_buffer_6, nullptr, tile_size_in_bytes);
+    auto run_mm2s_0 = mm2s_0(in_buffer_0, nullptr, tile_size_in_bytes);
+    auto run_mm2s_1 = mm2s_1(in_buffer_1, nullptr, tile_size_in_bytes);
+    auto run_mm2s_2 = mm2s_2(in_buffer_2, nullptr, tile_size_in_bytes);
+    auto run_mm2s_3 = mm2s_3(in_buffer_3, nullptr, tile_size_in_bytes);
+    auto run_mm2s_4 = mm2s_4(in_buffer_4, nullptr, tile_size_in_bytes);
+    auto run_mm2s_5 = mm2s_5(in_buffer_5, nullptr, tile_size_in_bytes);
+    auto run_mm2s_6 = mm2s_6(in_buffer_6, nullptr, tile_size_in_bytes);
 
     // Wait for kernels to complete
-    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
-        run_mm2s_[i].wait();
-        std::cout << "mm2s_" << std::to_string(i) << " completed" << std::endl;
-    }
+    run_mm2s_0.wait();
+    std::cout << "mm2s_0 completed" << std::endl;
+    run_mm2s_1.wait();
+    std::cout << "mm2s_1 completed" << std::endl;
+    run_mm2s_2.wait();
+    std::cout << "mm2s_2 completed" << std::endl;
+    run_mm2s_3.wait();
+    std::cout << "mm2s_3 completed" << std::endl;
+    run_mm2s_4.wait();
+    std::cout << "mm2s_4 completed" << std::endl;
+    run_mm2s_5.wait();
+    std::cout << "mm2s_5 completed" << std::endl;
+    run_mm2s_6.wait();
+    std::cout << "mm2s_6 completed" << std::endl;
 
-    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
-        run_s2mm_[i].wait();
-        std::cout << "s2mm_" << std::to_string(i) << " completed" << std::endl;
-    }
+    run_s2mm_0.wait();
+    std::cout << "s2mm_0 completed" << std::endl;
+    run_s2mm_1.wait();
+    std::cout << "s2mm_1 completed" << std::endl;
+    run_s2mm_2.wait();
+    std::cout << "s2mm_2 completed" << std::endl;
+    run_s2mm_3.wait();
+    std::cout << "s2mm_3 completed" << std::endl;
+    run_s2mm_4.wait();
+    std::cout << "s2mm_4 completed" << std::endl;
+    run_s2mm_5.wait();
+    std::cout << "s2mm_5 completed" << std::endl;
+    run_s2mm_6.wait();
+    std::cout << "s2mm_6 completed" << std::endl;
 
     std::cout << "Copy out_buffer_ to tiled_out_buffer" << std::endl;
-    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
-        tiled_out_buffer_[i].copy(out_buffer_[i], tile_size_in_bytes);
-    }
+    tiled_out_buffer_0.copy(out_buffer_0, tile_size_in_bytes);
+    tiled_out_buffer_1.copy(out_buffer_1, tile_size_in_bytes);
+    tiled_out_buffer_2.copy(out_buffer_2, tile_size_in_bytes);
+    tiled_out_buffer_3.copy(out_buffer_3, tile_size_in_bytes);
+    tiled_out_buffer_4.copy(out_buffer_4, tile_size_in_bytes);
+    tiled_out_buffer_5.copy(out_buffer_5, tile_size_in_bytes);
+    tiled_out_buffer_6.copy(out_buffer_6, tile_size_in_bytes);
+
 
     std::cout << "Run the sticker PL" << std::endl;
     auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
-	    out_buffer_[0], out_buffer_[1], out_buffer_[2], out_buffer_[3], out_buffer_[4],
-	    out_buffer_[5], out_buffer_[6], 
+	    out_buffer_0, out_buffer_1, out_buffer_2, out_buffer_3, out_buffer_4,
+	    out_buffer_5, out_buffer_6, 
 	    img_out_buffer);
     run_sticker_mm2mm_1.wait();
 
