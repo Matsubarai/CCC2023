@@ -12,7 +12,7 @@
 #include <xrt.h>
 #include <experimental/xrt_kernel.h>
 
-#define AIE_KERNEL_NUMBER 15
+#define AIE_KERNEL_NUMBER 7
 
 int main(int argc, char** argv) {
     if (argc < 2) {
@@ -107,8 +107,7 @@ int main(int argc, char** argv) {
     auto run_tile_mm2mm_1 = tile_mm2mm_1(
 	    img_in_buff, 
 	    in_buff_[1], in_buff_[2], in_buff_[3], in_buff_[4], in_buff_[5],
-	    in_buff_[6], in_buff_[7], in_buff_[8], in_buff_[9], in_buff_[10],
-	    in_buff_[11], in_buff_[12], in_buff_[13], in_buff_[14], in_buff_[15]);
+	    in_buff_[6], in_buff_[7]);
     run_tile_mm2mm_1.wait();
 
     for (unsigned i = 0; i < in_buff_.size(); ++i) {
@@ -143,8 +142,7 @@ int main(int argc, char** argv) {
     //TODO:sticker interface?
     auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
 	    out_buff_[1], out_buff_[2], out_buff_[3], out_buff_[4], out_buff_[5],
-	    out_buff_[6], out_buff_[7], out_buff_[8], out_buff_[9], out_buff_[10],
-	    out_buff_[11], out_buff_[12], out_buff_[13], out_buff_[14], out_buff_[15],
+	    out_buff_[6], out_buff_[7], 
 	    img_out_buff);
     run_sticker_mm2mm_1.wait();
 
