@@ -14,5 +14,4 @@ unsigned img_height = 480;
 unsigned img_number = 2;
 unsigned tile_width = 64;
 unsigned tile_height = 32;
-unsigned data_width = 32;
 unsigned aie_kernel_number = 15;
