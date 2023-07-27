@@ -158,8 +158,8 @@ int main(int argc, char** argv) {
     //TODO:tiler interface?
     auto run_tile_mm2mm_1 = tile_mm2mm_1(
 	    img_in_buff, 
-	    in_buff_[1], in_buff_[2], in_buff_[3], in_buff_[4], in_buff_[5],
-	    in_buff_[6], in_buff_[7]);
+	    in_buff_[0], in_buff_[1], in_buff_[2], in_buff_[3], in_buff_[4],
+	    in_buff_[5], in_buff_[6]);
     run_tile_mm2mm_1.wait();
 
     for (unsigned i = 0; i < in_buff_.size(); ++i) {
@@ -193,8 +193,8 @@ int main(int argc, char** argv) {
 
     //TODO:sticker interface?
     auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
-	    out_buff_[1], out_buff_[2], out_buff_[3], out_buff_[4], out_buff_[5],
-	    out_buff_[6], out_buff_[7], 
+	    out_buff_[0], out_buff_[1], out_buff_[2], out_buff_[3], out_buff_[4],
+	    out_buff_[5], out_buff_[6], 
 	    img_out_buff);
     run_sticker_mm2mm_1.wait();
 
