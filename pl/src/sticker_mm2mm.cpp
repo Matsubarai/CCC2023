@@ -169,7 +169,7 @@ ap_int<DWIDTH> *mem_out) {
 void sticker_mmtransfer(ap_int<DWIDTH> *mem_in1, ap_int<DWIDTH> *mem_in2, ap_int<DWIDTH> *mem_in3, ap_int<DWIDTH> *mem_in4, ap_int<DWIDTH> *mem_in5,
 ap_int<DWIDTH> *mem_in6, ap_int<DWIDTH> *mem_in7,
 ap_int<DWIDTH> *mem_out,
-unsigned count[AIE_KERNEL_NUMBER], unsigned aie_index, unsigned mem_out_index) {
+unsigned count[15], unsigned aie_index, unsigned mem_out_index) {
 
     switch(aie_index) {
         case 0:
