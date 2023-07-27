@@ -29,7 +29,7 @@ ap_int<DWIDTH> *mem_out11, ap_int<DWIDTH> *mem_out12, ap_int<DWIDTH> *mem_out13,
             for (unsigned k = 0; k < tile_num_width; k++) {
 
                 // 当前的 tile 应该传输给第 aie_index 个 aie kernel
-                unsigned aie_index = (j * tile_num_width + k) % aie_kernel_num + 1;
+                unsigned aie_index = (j * tile_num_width + k) % aie_kernel_number + 1;
                 
                 // 当前 tile 相对于第一个元素的偏移
                 unsigned offset_width  = k * (tile_width - 2);
