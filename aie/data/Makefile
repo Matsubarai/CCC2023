@@ -10,6 +10,6 @@ $(TARGETS): $(SRC_FILES)
 	@g++ -o $@ $@.cpp
 
 clean: 
-	rm ./input*.txt; \
+	rm ./*.txt; \
 	rm $(TARGETS)
 

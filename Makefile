@@ -81,6 +81,7 @@ clean:
 	make -C $(AIE_DIR) clean; \
 	make -C $(PL_DIR) clean; \
 	make -C $(HOST_DIR) clean; \
+	rm -rf $(BUILD_DIR)/; \
 	rm -rf *.log *.jou .Xil/
 
 distclean: clean

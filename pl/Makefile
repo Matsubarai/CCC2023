@@ -19,4 +19,4 @@ $(BUILD_DIR)/%.xo: src/%.cpp
 	v++ $(VPP_FLAGS) -k $* -c -g -o $@ $^
 
 clean:
-	rm -rf $(BUILD_DIR) *.log *.jou .Xil/
+	rm -rf $(BUILD_DIR) *.log *.jou .Xil/ _x/
