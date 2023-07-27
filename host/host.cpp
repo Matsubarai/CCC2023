@@ -12,6 +12,8 @@
 #include <xrt.h>
 #include <experimental/xrt_kernel.h>
 
+#define AIE_KERNEL_NUMBER 15
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <XCLBIN File>" << std::endl;
@@ -29,9 +31,9 @@ int main(int argc, char** argv) {
     std::cout << "Get references to compute units" << std::endl;
     auto tile_mm2mm_1 = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sitcker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
-    unsigned aie_kernel_number = 15;
-    std::array<xrt::kernel, aie_kernel_number> mm2s_;
-    std::array<xrt::kernel, aie_kernel_number> s2mm_;
+    unsigned AIE_KERNEL_NUMBER = 15;
+    std::array<xrt::kernel, AIE_KERNEL_NUMBER> mm2s_;
+    std::array<xrt::kernel, AIE_KERNEL_NUMBER> s2mm_;
     for (unsigned i = 0; i < mm2s_.size(); ++i) {
         std::string cu_name = "mm2s:{mm2s" + std::to_string(i+1) + "}";
         mm2s_[i] = xrt::kernel(device, uuid, cu_name.c_str());
@@ -55,31 +57,31 @@ int main(int argc, char** argv) {
     unsigned tile_num_width = ceil((float)(img_width - tile_width) / (tile_width - 2)) + 1;
 	unsigned tile_num_height = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
 
-    unsigned iteration = ceil((float)(tile_num_width * tile_num_height) / aie_kernel_number) * img_number;
+    unsigned iteration = ceil((float)(tile_num_width * tile_num_height) / AIE_KERNEL_NUMBER) * img_number;
     
     unsigned tile_num_elements = tile_width * tile_height;
     size_t img_size_in_bytes = sizeof(int) * img_num_elements;
     size_t tile_size_in_bytes = sizeof(int) * tile_num_elements * iteration;
     auto img_in_buff = xrt::bo(device, img_size_in_bytes, tile_mm2mm_1.group_id(0));
 
-    std::array<xrt::bo, aie_kernel_number> tiled_in_buff_;
+    std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buff_;
     for (unsigned i = 1; i <= tiled_in_buff_.size(); ++i) {
         tiled_in_buff_[i] = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(i));
     }
     
-    std::array<xrt::bo, aie_kernel_number> in_buff_;
+    std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buff_;
     for (unsigned i = 0; i < in_buff_.size(); ++i) {
         in_buff_[i] = xrt::bo(device, tile_size_in_bytes, mm2s_[i].group_id(0));
     }
 
     auto img_out_buff = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(15));
 
-    std::array<xrt::bo, aie_kernel_number> tiled_out_buff_;
+    std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_out_buff_;
     for (unsigned i = 0; i < tiled_out_buff_.size(); ++i) {
         tiled_out_buff_[i] = xrt:bo(device, tile_size_in_bytes, sticker_mm2mm_1.group_id(i));
     }
 
-    std::array<xrt::bo, aie_kernel_number> out_buff_;
+    std::array<xrt::bo, AIE_KERNEL_NUMBER> out_buff_;
     for (unsigned i = 0; i < out_buff_.size(); ++i) {
         out_buff_[i] = xrt::bo(device, tile_size_in_bytes, s2mm_[i].group_id(0));
     }
@@ -114,28 +116,28 @@ int main(int argc, char** argv) {
         in_buff_[i].copy(tile_in_buff_[i], tile_size_in_bytes);
     }
 
-    std::array<xrt::run, aie_kernel_number> run_s2mm_;
-    for (unsigned i = 0; i < aie_kernel_number; ++i) {
+    std::array<xrt::run, AIE_KERNEL_NUMBER> run_s2mm_;
+    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
         run_s2mm_[i] = s2mm_[i](out_buff_[i], nullptr, tile_size_in_bytes);
     }
  
-    std::array<xrt::run, aie_kernel_number> run_mm2s_;
-    for (unsigned i = 0; i < aie_kernel_number; ++i) {
+    std::array<xrt::run, AIE_KERNEL_NUMBER> run_mm2s_;
+    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
         run_mm2s_[i] = mm2s_[i](in_buff_[i], nullptr, tile_size_in_bytes);
     }
 
     // Wait for kernels to complete
-    for (unsigned i = 0; i < aie_kernel_number; ++i) {
+    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
         run_mm2s_[i].wait();
         std::cout << "mm2s_" << std::to_string(i) << " completed" << std::endl;
     }
 
-    for (unsigned i = 0; i < aie_kernel_number; ++i) {
+    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
         run_s2mm_[i].wait();
         std::cout << "s2mm_" << std::to_string(i) << " completed" << std::endl;
     }
 
-    for (unsigned i = 0; i < aie_kernel_number; ++i) {
+    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
         tiled_out_buff_[i].copy(out_buff_[i], tile_size_in_bytes);
     }
 
