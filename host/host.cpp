@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
     auto *img_output_ref = new int [img_element_number];
 
     for (unsigned int i = 0; i < img_element_number; i++) {
-        img_input[i] = (rand() % (1 << 30)) * ((rand()%2) ? 1 : -1);
+        img_input[i] = rand() % 100;
     }
 
     /////////////////////////////////////////////////
@@ -245,6 +245,8 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     std::cout << "Writing data to output file" << std::endl;
     std::ofstream outputfile;
+    std::cout << "Ref Out1 " << std::to_string(img_output_ref[0]) << std::endl;
+    std::cout << "AIE Out1 " << std::to_string(img_output_aie[0]) << std::endl;
     outputfile.open("build.hw/aie_hw_run_data/output.txt");
     for (unsigned i = 0; i < img_element_number; i++) {
         outputfile << img_output_aie[i] << std::endl;
