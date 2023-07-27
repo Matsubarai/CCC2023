@@ -82,18 +82,28 @@ int main(int argc, char** argv) {
 
     // 用来存储 PL tile 之后的分块数据
     // img_in_buffer ---(PL)---> tiled_in_buffer_
-    std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buffer_;
-    for (unsigned i = 1; i <= tiled_in_buffer_.size(); i++) {
-        tiled_in_buffer_[i] = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
-    }
+    // std::array<xrt::bo, AIE_KERNEL_NUMBER> tiled_in_buffer_;
+
+    tiled_in_buffer_0 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    tiled_in_buffer_1 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    tiled_in_buffer_2 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    tiled_in_buffer_3 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    tiled_in_buffer_4 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    tiled_in_buffer_5 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+    tiled_in_buffer_6 = xrt::bo(device, tile_size_in_bytes, tile_mm2mm_1.group_id(0));
+
     
     // 用来存储 aie kernel 的输入数据
     // tiled_in_buffer ---(copy)---> in_buffer_
-    std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buffer_;
-    for (unsigned i = 0; i < in_buffer_.size(); i++) {
-        in_buffer_[i] = xrt::bo(device, tile_size_in_bytes, mm2s_[i].group_id(0));
-    }
-    
+    // std::array<xrt::bo, AIE_KERNEL_NUMBER> in_buffer_;
+    in_buffer_0 = xrt::bo(device, tile_size_in_bytes, mm2s_[0].group_id(0));
+    in_buffer_1 = xrt::bo(device, tile_size_in_bytes, mm2s_[1].group_id(0));
+    in_buffer_2 = xrt::bo(device, tile_size_in_bytes, mm2s_[2].group_id(0));
+    in_buffer_3 = xrt::bo(device, tile_size_in_bytes, mm2s_[3].group_id(0));
+    in_buffer_4 = xrt::bo(device, tile_size_in_bytes, mm2s_[4].group_id(0));
+    in_buffer_5 = xrt::bo(device, tile_size_in_bytes, mm2s_[5].group_id(0));
+    in_buffer_6 = xrt::bo(device, tile_size_in_bytes, mm2s_[6].group_id(0));
+
     // 用于存储 aie kernel 的计算结果
     // in_buffer_ ---(aie kernel)---> out_buffer_
     std::array<xrt::bo, AIE_KERNEL_NUMBER> out_buffer_;
@@ -152,14 +162,19 @@ int main(int argc, char** argv) {
     std::cout << "Run the tile PL" << std::endl;
     auto run_tile_mm2mm_1 = tile_mm2mm_1(
 	    img_in_buffer, 
-	    in_buffer_[0], in_buffer_[1], in_buffer_[2], in_buffer_[3], in_buffer_[4],
-	    in_buffer_[5], in_buffer_[6]);
+	    in_buffer_0, in_buffer_1, in_buffer_2, in_buffer_3, in_buffer_4,
+	    in_buffer_5, in_buffer_6);
     run_tile_mm2mm_1.wait();
 
     std::cout << "Copy tiled_in_buffer_ to in_buffer_" << std::endl;
-    for (unsigned i = 0; i < in_buffer_.size(); ++i) {
-        in_buffer_[i].copy(tiled_in_buffer_[i], tile_size_in_bytes);
-    }
+    in_buffer_0.copy(tiled_in_buffer_0, tile_size_in_bytes);
+    in_buffer_1.copy(tiled_in_buffer_1, tile_size_in_bytes);
+    in_buffer_2.copy(tiled_in_buffer_2, tile_size_in_bytes);
+    in_buffer_3.copy(tiled_in_buffer_3, tile_size_in_bytes);
+    in_buffer_4.copy(tiled_in_buffer_4, tile_size_in_bytes);
+    in_buffer_5.copy(tiled_in_buffer_5, tile_size_in_bytes);
+    in_buffer_6.copy(tiled_in_buffer_6, tile_size_in_bytes);
+
 
     std::cout << "Run the s2mm PL" << std::endl;
     std::array<xrt::run, AIE_KERNEL_NUMBER> run_s2mm_;
@@ -169,9 +184,14 @@ int main(int argc, char** argv) {
     
     std::cout << "Run the mm2s PL" << std::endl;
     std::array<xrt::run, AIE_KERNEL_NUMBER> run_mm2s_;
-    for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
-        run_mm2s_[i] = mm2s_[i](in_buffer_[i], nullptr, tile_size_in_bytes);
-    }
+
+    run_mm2s_[0] = mm2s_[i](in_buffer_0, nullptr, tile_size_in_bytes);
+    run_mm2s_[1] = mm2s_[i](in_buffer_1, nullptr, tile_size_in_bytes);
+    run_mm2s_[2] = mm2s_[i](in_buffer_2, nullptr, tile_size_in_bytes);
+    run_mm2s_[3] = mm2s_[i](in_buffer_3, nullptr, tile_size_in_bytes);
+    run_mm2s_[4] = mm2s_[i](in_buffer_4, nullptr, tile_size_in_bytes);
+    run_mm2s_[5] = mm2s_[i](in_buffer_5, nullptr, tile_size_in_bytes);
+    run_mm2s_[6] = mm2s_[i](in_buffer_6, nullptr, tile_size_in_bytes);
 
     // Wait for kernels to complete
     for (unsigned i = 0; i < AIE_KERNEL_NUMBER; ++i) {
