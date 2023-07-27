@@ -42,13 +42,13 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
                         
                         // 遍历到图片边缘后需要进行 padding 操作 
                         // mem_in_index == -1 表示补零
-                        if ((ti + offset_height < img_height) && (tj + offset_width < img_width))
-                            mem_in_index = (ti + offset_height) * img_width + tj + offset_width + offset_img;
-                        else if ((ti + offset_height == img_height) && (tj + offset_width < img_width))
-                            mem_in_index = (img_height - 1) * img_width + tj + offset_width + offset_img;
-                        else if ((ti + offset_height < img_height) && (tj + offset_width == img_width))
-                            mem_in_index = (ti + offset_height) * img_width + img_width - 1 + offset_img;
-                        else if ((ti + offset_height == img_height) && (tj + offset_width == img_width))
+                        if ((th + offset_height < img_height) && (tw + offset_width < img_width))
+                            mem_in_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
+                        else if ((th + offset_height == img_height) && (tw + offset_width < img_width))
+                            mem_in_index = (img_height - 1) * img_width + tw + offset_width + offset_img;
+                        else if ((th + offset_height < img_height) && (tw + offset_width == img_width))
+                            mem_in_index = (th + offset_height) * img_width + img_width - 1 + offset_img;
+                        else if ((th + offset_height == img_height) && (tw + offset_width == img_width))
                             mem_in_index = (img_height - 1) * img_width + img_width - 1 + offset_img;
                         else
                             mem_in_index = -1;
