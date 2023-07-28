@@ -114,6 +114,8 @@ int main(int argc, char** argv) {
     	cal_ref(img_input + img_index * img_width * img_height, img_width, img_height, kernel_coeff, img_output_ref + img_index * img_width * img_height);
     }
 
+    auto start = chrono::steady_clock::now();
+    
     /////////////////////////////////////////////////
     // Write input data to device global memory
     /////////////////////////////////////////////////
@@ -125,6 +127,12 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     std::cout << "Synchronize input buffers data to device global memory" << std::endl;
     img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+
+    auto end = chrono::steady_clock::now();
+
+    cout << "Elapsed time in milliseconds: "
+        << chrono::duration_cast<chrono::milliseconds>(end - start).count()
+        << " ms" << endl;
 
     /////////////////////////////////////////////////
     // Execute the PL compute units
@@ -190,7 +198,7 @@ int main(int argc, char** argv) {
     std::cout << "Writing data to output file" << std::endl;
     std::ofstream outputfile;
     std::cout << "Ref Out1 " << std::to_string(img_output_ref[0]) << std::endl;
-    // std::cout << "AIE Out1 " << std::to_string(img_output_aie[0]) << std::endl;
+    std::cout << "AIE Out1 " << std::to_string(img_output_aie[0]) << std::endl;
     outputfile.open("build.hw/aie_hw_run_data/output.txt");
     for (unsigned i = 0; i < img_element_number; i++) {
         outputfile << img_output_aie[i] << std::endl;
