@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     std::cout << "Cal output reference" << std::endl;
     int kernel_coeff[16] = {64, 128, 64, 128, 256, 128, 64, 128, 64};
-    for (int img_index = 0; img_index < img_number; img_index++) {
+    for (unsigned img_index = 0; img_index < img_number; img_index++) {
     	cal_ref(img_input + img_index * img_width * img_height, img_width, img_height, kernel_coeff, img_output_ref + img_index * img_width * img_height);
     }
 
