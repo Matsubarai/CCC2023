@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
     // // Concatenate the input data
     // /////////////////////////////////////////////////
     // std::cout << "Concatenate the input data" << std::endl;
-    // auto *img_input_con = new data_bus [img_element_number / DATA_NUM];
+    auto *img_input_con = new data_bus [img_element_number / DATA_NUM];
     // for (int i = 0; i < img_element_number / DATA_NUM; i++) {
     //     for (int j = 0; j < DATA_NUM; j++) {
     //         img_input_con[i].data[j] = img_input[i * DATA_NUM + j];
@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
     	cal_ref(img_input + img_index * img_width * img_height, img_width, img_height, kernel_coeff, img_output_ref + img_index * img_width * img_height);
     }
 
-    auto start = chrono::steady_clock::now();
+    auto start = std::chrono::steady_clock::now();
     
     /////////////////////////////////////////////////
     // Write input data to device global memory
@@ -128,10 +128,10 @@ int main(int argc, char** argv) {
     std::cout << "Synchronize input buffers data to device global memory" << std::endl;
     img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
-    auto end = chrono::steady_clock::now();
+    auto end = std::chrono::steady_clock::now();
 
     std::cout << "Elapsed time in milliseconds: "
-        << chrono::duration_cast<chrono::milliseconds>(end - start).count()
+        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
         << " ms" << std::endl;
 
     /////////////////////////////////////////////////
