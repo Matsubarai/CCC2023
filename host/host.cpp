@@ -130,11 +130,11 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     std::cout << "Run the PL kernels" << std::endl;
 
-    // std::cout << "Run the sticker PL" << std::endl;
-    // auto run_sticker_s2mm_1 = sticker_s2mm_1(
-	   //  nullptr, nullptr, nullptr, nullptr, nullptr,
-	   //  nullptr, nullptr, 
-	   //  img_out_buffer);
+    std::cout << "Run the sticker PL" << std::endl;
+    auto run_sticker_s2mm_1 = sticker_s2mm_1(
+	    nullptr, nullptr, nullptr, nullptr, nullptr,
+	    nullptr, nullptr, 
+	    img_out_buffer);
 
     std::cout << "Run the tile PL" << std::endl;
     auto run_tile_mm2s_1 = tile_mm2s_1(
@@ -145,19 +145,19 @@ int main(int argc, char** argv) {
     run_tile_mm2s_1.wait();
     std::cout << "tile_mm2s_1 completed" << std::endl;
 
-    // run_sticker_s2mm_1.wait();
-    // std::cout << "sticker_s2mm_1 completed" << std::endl;
+    run_sticker_s2mm_1.wait();
+    std::cout << "sticker_s2mm_1 completed" << std::endl;
 
-    // /////////////////////////////////////////////////
-    // // Synchronize the output buffer data from the device
-    // /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
+    // Synchronize the output buffer data from the device
+    /////////////////////////////////////////////////
     // std::cout << "Synchronize output buffers data to device global memory" << std::endl;
     // img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // /////////////////////////////////////////////////
     // // Read output buffer data to local buffer
     // /////////////////////////////////////////////////
-    // std::cout << "Read output data from device global memory" << std::endl;
+    std::cout << "Read output data from device global memory" << std::endl;
     auto *img_output_aie_con = new data_bus [img_element_number / DATA_NUM];
     // img_out_buffer.read(img_output_aie_con);
 
