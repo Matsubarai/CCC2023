@@ -5,7 +5,7 @@
 #include "config.h"
 
 // 对一张图片的指定位置进行 tile 操作
-void tile_mm2s(ap_int<DWIDTH> *mem_in, 
+void tile_mm2s(ap_int<BUS_DWIDTH> *mem_in, 
 hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, hls::stream<data> &s3, 
 hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
 
@@ -15,6 +15,9 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
 
     // 用作 mem_in 的索引
     int mem_in_index;
+    unsigned mem_in_index_group;
+    unsigned mem_in_index_idx;
+    ap_int<DWIDTH> mem_tmp;
 
     // 遍历所有图片
     for (unsigned img_index = 0; img_index < img_number; img_index++) {
@@ -39,7 +42,7 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                         
                         // 遍历到图片边缘后需要进行 padding 操作 
                         // mem_in_index == -1 表示补零
-                        if ((th + offset_height < img_height) && (tw + offset_width < img_width))
+                        if ((th + offset_height < img_height) && (tw + offset_width < img_width)) 
                             mem_in_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
                         else if ((th + offset_height == img_height) && (tw + offset_width < img_width))
                             mem_in_index = (img_height - 1) * img_width + tw + offset_width + offset_img;
@@ -53,8 +56,13 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                         data x;
                         if (mem_in_index == -1)
                             x.data = 0;
-                        else 
-                            x.data = mem_in[mem_in_index];
+                        else {
+                            mem_in_index_group = mem_in_index / DATA_NUM;
+                            mem_in_index_idx   = mem_in_index % DATA_NUM;
+                            mem_tmp = mem_in[mem_in_index_group].range((mem_in_index_idx + 1) * DWIDTH - 1, mem_in_index_idx * DWIDTH);
+                            x.data = mem_tmp;
+                        }
+                            
                         x.keep_all();
                         // 将分块好的数据存入对应 aie 所读取的 mem 区域
                         switch(aie_index) {

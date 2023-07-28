@@ -6,8 +6,11 @@
 #include <ap_int.h>
 #include <hls_stream.h>
 
-#define DWIDTH 32
 #define AIE_KERNEL_NUMBER 7
+#define BUS_DWIDTH 256
+#define DWIDTH 32
+#define DATA_NUM (BUS_DWIDTH / DWIDTH)
+
 typedef qdma_axis<DWIDTH, 0, 0, 0> data;
 
 unsigned img_width = 720;

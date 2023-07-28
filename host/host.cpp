@@ -14,6 +14,13 @@
 #include <experimental/xrt_kernel.h>
 
 #define AIE_KERNEL_NUMBER 7
+#define BUS_DWIDTH 256
+#define DWIDTH 32
+#define DATA_NUM (BUS_DWIDTH / DWIDTH)
+
+typedef struct {
+    int data[8];
+} data_bus;
 
 void cal_ref(int* input_buffer, unsigned width, unsigned height, int* kernel_coeff, int* ref_buffer);
 
@@ -61,19 +68,18 @@ int main(int argc, char** argv) {
     // 每个 aie kernel 需要循环计算的总次数
     unsigned iteration = ceil((float)(tile_width_number * tile_height_number) / AIE_KERNEL_NUMBER) * img_number;
     
-    // 所有输入图片的大小
-    size_t img_size_in_bytes  = sizeof(int) * img_element_number;
+    // 所有输入图片的拼接后的大小
+    size_t img_buffer_size  = BUS_DWIDTH * (img_element_number / DATA_NUM);
 
     // 用来存储所有的图片
     // host mem ------> device mem (img_in_buffer)
     // 后续：img_in_buffer ---(PL:tile_mm2s_1)---> aie kernel
-    auto img_in_buffer = xrt::bo(device, img_size_in_bytes, tile_mm2s_1.group_id(0));
-
+    auto img_in_buffer = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(0));
     
     // 用来存储最后的计算结果
     // aie kernel ---(PL:sticker_s2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
-    auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_s2mm_1.group_id(7));
+    auto img_out_buffer = xrt::bo(device, img_buffer_size, sticker_s2mm_1.group_id(7));
 
     /////////////////////////////////////////////////
     // Read data from file 
@@ -84,7 +90,18 @@ int main(int argc, char** argv) {
     auto *img_output_ref = new int [img_element_number];
 
     for (unsigned int i = 0; i < img_element_number; i++) {
-        img_input[i] = rand() % 100;
+        img_input[i] = rand() % 10;
+    }
+
+    /////////////////////////////////////////////////
+    // Concatenate the input data
+    /////////////////////////////////////////////////
+    std::cout << "Concatenate the input data" << std::endl;
+    auto *img_input_con = new data_bus [img_element_number / DATA_NUM];
+    for (int i = 0; i < img_element_number / DATA_NUM; i++) {
+        for (int j = 0; j < DATA_NUM; j++) {
+            img_input_con[i].data[j] = img_input[i * DATA_NUM + j];
+        }
     }
 
     /////////////////////////////////////////////////
@@ -100,7 +117,7 @@ int main(int argc, char** argv) {
     // Write input data to device global memory
     /////////////////////////////////////////////////
     std::cout << "Write input data to device global memory" << std::endl;
-    img_in_buffer.write(img_input);
+    img_in_buffer.write(img_input_con);
 
     /////////////////////////////////////////////////
     // Synchronize input buffers data to device global memory
@@ -141,7 +158,18 @@ int main(int argc, char** argv) {
     // Read output buffer data to local buffer
     /////////////////////////////////////////////////
     std::cout << "Read output data from device global memory" << std::endl;
-    img_out_buffer.read(img_output_aie);
+    auto *img_output_aie_con = new data_bus [img_element_number / DATA_NUM];
+    img_out_buffer.read(img_output_aie_con);
+
+    /////////////////////////////////////////////////
+    // Split the output data
+    /////////////////////////////////////////////////
+    std::cout << "Split the output data" << std::endl;
+    for (int i = 0; i < img_element_number / DATA_NUM; i++) {
+        for (int j = 0; j < DATA_NUM; j++) {
+            img_output_aie[i * DATA_NUM + j] = img_output_aie_con[i].data[j];
+        }
+    }
 
     /////////////////////////////////////////////////
     // Correctness verification
@@ -171,6 +199,8 @@ int main(int argc, char** argv) {
     delete [] img_input;
     delete [] img_output_aie;
     delete [] img_output_ref;
+    delete [] img_input_con;
+    delete [] img_output_aie_con;
 
     return 0;
 }
