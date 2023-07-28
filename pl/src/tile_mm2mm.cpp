@@ -107,5 +107,44 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
                 }
             }
         }
+
+        unsigned remain = (tile_num_width * tile_num_height) % AIE_KERNEL_NUMBER;
+        
+        if (remain != 0) {
+            for (unsigned j = 1; j < AIE_KERNEL_NUMBER - remain; j++) {
+
+                unsigned aie_index = remain + j - 1;
+
+                for (unsigned ti = 0; ti < tile_height; ti++) {
+                    for (unsigned tj = 0; tj < tile_width; tj++) {
+                        switch (aie_index) {
+                        case 0:
+                            mem_out1[count[aie_index]++] = 0;
+                            break;
+                        case 1:
+                            mem_out2[count[aie_index]++] = 0;
+                            break;
+                        case 2:
+                            mem_out3[count[aie_index]++] = 0;
+                            break;
+                        case 3:
+                            mem_out4[count[aie_index]++] = 0;
+                            break;
+                        case 4:
+                            mem_out5[count[aie_index]++] = 0;
+                            break;
+                        case 5:
+                            mem_out6[count[aie_index]++] = 0;
+                            break;
+                        case 6:
+                            mem_out7[count[aie_index]++] = 0;
+                            break;
+                        default:
+                            mem_out1[count[aie_index]++] = 0;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
