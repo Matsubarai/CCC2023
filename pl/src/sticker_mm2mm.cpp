@@ -36,24 +36,24 @@ ap_int<DWIDTH> *mem_out) {
                 // 遍历当前 tile
                 for (int th = 0; th < tile_height; th++) {
                     for (int tw = 0; tw < tile_width; tw++) {
-                        
+                        data x;
                         switch(aie_index) {
                             case 0:
-                                data x = s0.read();
+                                x = s0.read();
                             case 1:
-                                data x = s1.read();
+                                x = s1.read();
                             case 2:
-                                data x = s2.read();
+                                x = s2.read();
                             case 3:
-                                data x = s3.read();
+                                x = s3.read();
                             case 4:
-                                data x = s4.read();
+                                x = s4.read();
                             case 5:
-                                data x = s5.read();
+                                x = s5.read();
                             case 6:
-                                data x = s6.read();
+                                x = s6.read();
                             default:
-                                data x = s0.read();
+                                x = s0.read();
                         }
 
                         mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
