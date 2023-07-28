@@ -63,8 +63,6 @@ int main(int argc, char** argv) {
     
     // 所有输入图片的大小
     size_t img_size_in_bytes  = sizeof(int) * img_element_number;
-    // 所有 tile 的大小
-    size_t tile_size_in_bytes = sizeof(int) * tile_element_number * iteration;
 
     // 用来存储所有的图片
     // host mem ------> device mem (img_in_buffer)
