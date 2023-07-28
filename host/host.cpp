@@ -87,6 +87,7 @@ int main(int argc, char** argv) {
     std::cout << "Read data from file" << std::endl;
     auto *img_input      = new int [img_element_number];
     auto *img_output_aie = new int [img_element_number];
+    auto *img_placeholder= new int [img_element_number];
     auto *img_output_ref = new int [img_element_number];
 
     for (unsigned int i = 0; i < img_element_number; i++) {
@@ -117,7 +118,7 @@ int main(int argc, char** argv) {
     // Write input data to device global memory
     /////////////////////////////////////////////////
     std::cout << "Write input data to device global memory" << std::endl;
-    img_in_buffer.write(img_input_con);
+    img_in_buffer.write(img_input);
 
     /////////////////////////////////////////////////
     // Synchronize input buffers data to device global memory
@@ -159,17 +160,17 @@ int main(int argc, char** argv) {
     // /////////////////////////////////////////////////
     std::cout << "Read output data from device global memory" << std::endl;
     auto *img_output_aie_con = new data_bus [img_element_number / DATA_NUM];
-    // img_out_buffer.read(img_output_aie_con);
+    img_out_buffer.read(img_output_aie);
 
     /////////////////////////////////////////////////
     // Split the output data
     /////////////////////////////////////////////////
-    std::cout << "Split the output data" << std::endl;
-    for (int i = 0; i < img_element_number / DATA_NUM; i++) {
-        for (int j = 0; j < DATA_NUM; j++) {
-            img_output_aie[i * DATA_NUM + j] = img_output_aie_con[i].data[j];
-        }
-    }
+    // std::cout << "Split the output data" << std::endl;
+    // for (int i = 0; i < img_element_number / DATA_NUM; i++) {
+    //     for (int j = 0; j < DATA_NUM; j++) {
+    //         img_output_aie[i * DATA_NUM + j] = img_output_aie_con[i].data[j];
+    //     }
+    // }
 
     /////////////////////////////////////////////////
     // Correctness verification
