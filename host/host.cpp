@@ -150,9 +150,9 @@ int main(int argc, char** argv) {
 
     /////////////////////////////////////////////////
     // Synchronize the output buffer data from the device
-    /////////////////////////////////////////////////
-    // std::cout << "Synchronize output buffers data to device global memory" << std::endl;
-    // img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+    ///////////////////////////////////////////////
+    std::cout << "Synchronize output buffers data to device global memory" << std::endl;
+    img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // /////////////////////////////////////////////////
     // // Read output buffer data to local buffer
