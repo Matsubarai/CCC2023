@@ -200,7 +200,7 @@ int main(int argc, char** argv) {
     delete [] img_output_aie;
     delete [] img_output_ref;
     delete [] img_input_con;
-    delete [] img_output_aie_con;
+    // delete [] img_output_aie_con;
 
     return 0;
 }
