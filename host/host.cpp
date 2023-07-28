@@ -171,17 +171,17 @@ int main(int argc, char** argv) {
         }
     }
 
-    // /////////////////////////////////////////////////
-    // // Correctness verification
-    // /////////////////////////////////////////////////
-    // std::cout << "Correctness verification" << std::endl;
-    // unsigned erro = 0;
-    // for (unsigned i = 0; i < img_element_number; i++) {
-    //     if (abs(img_output_aie[i] - img_output_ref[i]) > 1e-3) {
-    //         erro++;
-    //     }
-    // }
-    // std::cout << "Erro time: " << erro << std::endl;
+    /////////////////////////////////////////////////
+    // Correctness verification
+    /////////////////////////////////////////////////
+    std::cout << "Correctness verification" << std::endl;
+    unsigned erro = 0;
+    for (unsigned i = 0; i < img_element_number; i++) {
+        if (abs(img_output_aie[i] - img_output_ref[i]) > 1e-3) {
+            erro++;
+        }
+    }
+    std::cout << "Erro time: " << erro << std::endl;
 
     /////////////////////////////////////////////////
     // Writing data to output file
