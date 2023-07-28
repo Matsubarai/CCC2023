@@ -94,16 +94,16 @@ int main(int argc, char** argv) {
         img_input[i] = rand() % 10;
     }
 
-    /////////////////////////////////////////////////
-    // Concatenate the input data
-    /////////////////////////////////////////////////
-    std::cout << "Concatenate the input data" << std::endl;
-    auto *img_input_con = new data_bus [img_element_number / DATA_NUM];
-    for (int i = 0; i < img_element_number / DATA_NUM; i++) {
-        for (int j = 0; j < DATA_NUM; j++) {
-            img_input_con[i].data[j] = img_input[i * DATA_NUM + j];
-        }
-    }
+    // /////////////////////////////////////////////////
+    // // Concatenate the input data
+    // /////////////////////////////////////////////////
+    // std::cout << "Concatenate the input data" << std::endl;
+    // auto *img_input_con = new data_bus [img_element_number / DATA_NUM];
+    // for (int i = 0; i < img_element_number / DATA_NUM; i++) {
+    //     for (int j = 0; j < DATA_NUM; j++) {
+    //         img_input_con[i].data[j] = img_input[i * DATA_NUM + j];
+    //     }
+    // }
 
     /////////////////////////////////////////////////
     // Cal output reference
@@ -130,9 +130,9 @@ int main(int argc, char** argv) {
 
     auto end = chrono::steady_clock::now();
 
-    cout << "Elapsed time in milliseconds: "
+    std::cout << "Elapsed time in milliseconds: "
         << chrono::duration_cast<chrono::milliseconds>(end - start).count()
-        << " ms" << endl;
+        << " ms" << std::endl;
 
     /////////////////////////////////////////////////
     // Execute the PL compute units
