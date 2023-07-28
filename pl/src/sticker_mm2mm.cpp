@@ -44,14 +44,18 @@ ap_int<DWIDTH> *mem_out) {
                 unsigned offset_width  = tile_index_width  * (tile_width  - 2);
                 unsigned offset_height = tile_index_height * (tile_height - 2);
 
+                // 当前 tile 是当前 aie kernel 处理的第几个 tile
+                unsigned offset_tile = (img_index * tile_per_img + (tile_index_height * tile_num_width + tile_index_width) / AIE_KERNEL_NUMBER) * tile_width * tile_height;
+
                 if (tile_index_height == 0 && tile_index_width == 0) {
                     for (int th = 0; th < tile_height - 1; th++) {
                         for (int tw = 0; tw < tile_width - 1; tw++) {
 
                             mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                            mem_in_index = th * tile_width + tw;
+                            mem_in_index = th * tile_width + tw + offset_tile;
                             sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                 aie_index, mem_in_index, mem_out_index);
+                            
                         }
                     }
                 }
@@ -61,7 +65,7 @@ ap_int<DWIDTH> *mem_out) {
                         for (int tw = 1; tw < tile_width - 1; tw++) {
 
                             mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                            mem_in_index = th * tile_width + tw;
+                            mem_in_index = th * tile_width + tw + offset_tile;
                             sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                 aie_index, mem_in_index, mem_out_index);
 
@@ -74,7 +78,7 @@ ap_int<DWIDTH> *mem_out) {
                         for (int tw = 0; tw < tile_width - 1; tw++) {
 
                             mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                            mem_in_index = th * tile_width + tw;
+                            mem_in_index = th * tile_width + tw + offset_tile;
                             sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                 aie_index, mem_in_index, mem_out_index);
 
@@ -87,7 +91,7 @@ ap_int<DWIDTH> *mem_out) {
                         for (int tw = 1; tw < tile_width - 1; tw++) {
 
                             mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                            mem_in_index = th * tile_width + tw;
+                            mem_in_index = th * tile_width + tw + offset_tile;
                             sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                 aie_index, mem_in_index, mem_out_index);
 
@@ -101,7 +105,7 @@ ap_int<DWIDTH> *mem_out) {
                             if (tw + offset_width < img_width) {
 
                                 mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                                mem_in_index = th * tile_width + tw;
+                                mem_in_index = th * tile_width + tw + offset_tile;
                                 sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                     aie_index, mem_in_index, mem_out_index);
 
@@ -116,10 +120,10 @@ ap_int<DWIDTH> *mem_out) {
                             if (tw + offset_width < img_width) {
 
                                 mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                                mem_in_index = th * tile_width + tw;
+                                mem_in_index = th * tile_width + tw + offset_tile;
                                 sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                     aie_index, mem_in_index, mem_out_index);
-
+                                
                             }
                         }
                     }
@@ -131,7 +135,7 @@ ap_int<DWIDTH> *mem_out) {
                             if (th + offset_height < img_height) {
 
                                 mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                                mem_in_index = th * tile_width + tw;
+                                mem_in_index = th * tile_width + tw + offset_tile;
                                 sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                     aie_index, mem_in_index, mem_out_index);
 
@@ -146,7 +150,7 @@ ap_int<DWIDTH> *mem_out) {
                             if (th + offset_height < img_height) {
 
                                 mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                                mem_in_index = th * tile_width + tw;
+                                mem_in_index = th * tile_width + tw + offset_tile;
                                 sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                     aie_index, mem_in_index, mem_out_index);
 
@@ -161,7 +165,7 @@ ap_int<DWIDTH> *mem_out) {
                             if ((th + offset_height < img_height) && (tw + offset_width < img_width)) {
 
                                 mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                                mem_in_index = th * tile_width + tw;
+                                mem_in_index = th * tile_width + tw + offset_tile;
                                 sticker_mmtransfer(mem_in1, mem_in2, mem_in3, mem_in4, mem_in5, mem_in6, mem_in7, mem_out,
                                     aie_index, mem_in_index, mem_out_index);
 
