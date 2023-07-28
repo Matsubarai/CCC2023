@@ -113,63 +113,63 @@ int main(int argc, char** argv) {
     	cal_ref(img_input + img_index * img_width * img_height, img_width, img_height, kernel_coeff, img_output_ref + img_index * img_width * img_height);
     }
 
-    // /////////////////////////////////////////////////
-    // // Write input data to device global memory
-    // /////////////////////////////////////////////////
-    // std::cout << "Write input data to device global memory" << std::endl;
-    // img_in_buffer.write(img_input_con);
+    /////////////////////////////////////////////////
+    // Write input data to device global memory
+    /////////////////////////////////////////////////
+    std::cout << "Write input data to device global memory" << std::endl;
+    img_in_buffer.write(img_input_con);
 
-    // /////////////////////////////////////////////////
-    // // Synchronize input buffers data to device global memory
-    // /////////////////////////////////////////////////
-    // std::cout << "Synchronize input buffers data to device global memory" << std::endl;
-    // img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    /////////////////////////////////////////////////
+    // Synchronize input buffers data to device global memory
+    /////////////////////////////////////////////////
+    std::cout << "Synchronize input buffers data to device global memory" << std::endl;
+    img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
-    // /////////////////////////////////////////////////
-    // // Execute the PL compute units
-    // /////////////////////////////////////////////////
-    // std::cout << "Run the PL kernels" << std::endl;
+    /////////////////////////////////////////////////
+    // Execute the PL compute units
+    /////////////////////////////////////////////////
+    std::cout << "Run the PL kernels" << std::endl;
 
-    // std::cout << "Run the sticker PL" << std::endl;
-    // auto run_sticker_s2mm_1 = sticker_s2mm_1(
-	   //  nullptr, nullptr, nullptr, nullptr, nullptr,
-	   //  nullptr, nullptr, 
-	   //  img_out_buffer);
+    std::cout << "Run the sticker PL" << std::endl;
+    auto run_sticker_s2mm_1 = sticker_s2mm_1(
+	    nullptr, nullptr, nullptr, nullptr, nullptr,
+	    nullptr, nullptr, 
+	    img_out_buffer);
 
-    // std::cout << "Run the tile PL" << std::endl;
-    // auto run_tile_mm2s_1 = tile_mm2s_1(
-	   //  img_in_buffer, 
-	   //  nullptr, nullptr, nullptr, nullptr, nullptr,
-	   //  nullptr, nullptr);
+    std::cout << "Run the tile PL" << std::endl;
+    auto run_tile_mm2s_1 = tile_mm2s_1(
+	    img_in_buffer, 
+	    nullptr, nullptr, nullptr, nullptr, nullptr,
+	    nullptr, nullptr);
 
-    // run_tile_mm2s_1.wait();
-    // std::cout << "tile_mm2s_1 completed" << std::endl;
+    run_tile_mm2s_1.wait();
+    std::cout << "tile_mm2s_1 completed" << std::endl;
 
-    // run_sticker_s2mm_1.wait();
-    // std::cout << "sticker_s2mm_1 completed" << std::endl;
+    run_sticker_s2mm_1.wait();
+    std::cout << "sticker_s2mm_1 completed" << std::endl;
 
-    // /////////////////////////////////////////////////
-    // // Synchronize the output buffer data from the device
-    // /////////////////////////////////////////////////
-    // std::cout << "Synchronize output buffers data to device global memory" << std::endl;
-    // img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+    /////////////////////////////////////////////////
+    // Synchronize the output buffer data from the device
+    /////////////////////////////////////////////////
+    std::cout << "Synchronize output buffers data to device global memory" << std::endl;
+    img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
-    // /////////////////////////////////////////////////
-    // // Read output buffer data to local buffer
-    // /////////////////////////////////////////////////
-    // std::cout << "Read output data from device global memory" << std::endl;
-    // auto *img_output_aie_con = new data_bus [img_element_number / DATA_NUM];
-    // img_out_buffer.read(img_output_aie_con);
+    /////////////////////////////////////////////////
+    // Read output buffer data to local buffer
+    /////////////////////////////////////////////////
+    std::cout << "Read output data from device global memory" << std::endl;
+    auto *img_output_aie_con = new data_bus [img_element_number / DATA_NUM];
+    img_out_buffer.read(img_output_aie_con);
 
-    // /////////////////////////////////////////////////
-    // // Split the output data
-    // /////////////////////////////////////////////////
-    // std::cout << "Split the output data" << std::endl;
-    // for (int i = 0; i < img_element_number / DATA_NUM; i++) {
-    //     for (int j = 0; j < DATA_NUM; j++) {
-    //         img_output_aie[i * DATA_NUM + j] = img_output_aie_con[i].data[j];
-    //     }
-    // }
+    /////////////////////////////////////////////////
+    // Split the output data
+    /////////////////////////////////////////////////
+    std::cout << "Split the output data" << std::endl;
+    for (int i = 0; i < img_element_number / DATA_NUM; i++) {
+        for (int j = 0; j < DATA_NUM; j++) {
+            img_output_aie[i * DATA_NUM + j] = img_output_aie_con[i].data[j];
+        }
+    }
 
     // /////////////////////////////////////////////////
     // // Correctness verification
@@ -200,7 +200,7 @@ int main(int argc, char** argv) {
     delete [] img_output_aie;
     delete [] img_output_ref;
     delete [] img_input_con;
-    // delete [] img_output_aie_con;
+    delete [] img_output_aie_con;
 
     return 0;
 }
