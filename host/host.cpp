@@ -18,9 +18,6 @@
 #define DWIDTH 32
 #define DATA_NUM (BUS_DWIDTH / DWIDTH)
 
-typedef struct {
-    int data[8];
-} data_bus;
 
 void cal_ref(int* input_buffer, unsigned width, unsigned height, int* kernel_coeff, int* ref_buffer);
 
@@ -94,17 +91,6 @@ int main(int argc, char** argv) {
         img_input[i] = rand() % 10;
     }
 
-    // /////////////////////////////////////////////////
-    // // Concatenate the input data
-    // /////////////////////////////////////////////////
-    // std::cout << "Concatenate the input data" << std::endl;
-    auto *img_input_con = new data_bus [img_element_number / DATA_NUM];
-    // for (int i = 0; i < img_element_number / DATA_NUM; i++) {
-    //     for (int j = 0; j < DATA_NUM; j++) {
-    //         img_input_con[i].data[j] = img_input[i * DATA_NUM + j];
-    //     }
-    // }
-
     /////////////////////////////////////////////////
     // Cal output reference
     /////////////////////////////////////////////////
@@ -130,9 +116,9 @@ int main(int argc, char** argv) {
 
     auto end = std::chrono::steady_clock::now();
 
-    std::cout << "Elapsed time in milliseconds: "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-        << " ms" << std::endl;
+    std::cout << "Elapsed time in nanoseconds: "
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()
+        << " ns" << std::endl;
 
     /////////////////////////////////////////////////
     // Execute the PL compute units
@@ -167,18 +153,7 @@ int main(int argc, char** argv) {
     // // Read output buffer data to local buffer
     // /////////////////////////////////////////////////
     std::cout << "Read output data from device global memory" << std::endl;
-    auto *img_output_aie_con = new data_bus [img_element_number / DATA_NUM];
     img_out_buffer.read(img_output_aie);
-
-    /////////////////////////////////////////////////
-    // Split the output data
-    /////////////////////////////////////////////////
-    // std::cout << "Split the output data" << std::endl;
-    // for (int i = 0; i < img_element_number / DATA_NUM; i++) {
-    //     for (int j = 0; j < DATA_NUM; j++) {
-    //         img_output_aie[i * DATA_NUM + j] = img_output_aie_con[i].data[j];
-    //     }
-    // }
 
     /////////////////////////////////////////////////
     // Correctness verification
@@ -208,8 +183,6 @@ int main(int argc, char** argv) {
     delete [] img_input;
     delete [] img_output_aie;
     delete [] img_output_ref;
-    delete [] img_input_con;
-    delete [] img_output_aie_con;
 
     return 0;
 }
