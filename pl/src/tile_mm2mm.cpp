@@ -108,7 +108,7 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
             }
         }
 
-        unsigned remain = (tile_num_width * tile_num_height) % AIE_KERNEL_NUMBER;
+        unsigned remain = (tile_width_number * tile_height_number) % AIE_KERNEL_NUMBER;
         
         if (remain != 0) {
             for (unsigned j = 0; j < AIE_KERNEL_NUMBER - remain; j++) {
