@@ -9,13 +9,10 @@ void tile_mm2mm(ap_int<DWIDTH> *mem_in,
 hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, hls::stream<data> &s3, 
 hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
 
-
     // 每张图片的 tile 个数（width 和 height 两个维度）
     unsigned tile_width_number  = ceil((float)(img_width  - tile_width)  / (tile_width  - 2)) + 1;
     unsigned tile_height_number = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
 
-    // // 用作每个 mem_out 的索引
-    // unsigned count[AIE_KERNEL_NUMBER] = {0};
     // 用作 mem_in 的索引
     int mem_in_index;
 
@@ -84,49 +81,6 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                                 break;
                             default:
                                 s0.write(x);
-                        }
-                    }
-                }
-            }
-        }
-
-        unsigned remain = (tile_width_number * tile_height_number) % AIE_KERNEL_NUMBER;
-        
-        if (remain != 0) {
-            for (unsigned j = 0; j < AIE_KERNEL_NUMBER - remain; j++) {
-
-                unsigned aie_index = remain + j;
-
-                for (unsigned ti = 0; ti < tile_height; ti++) {
-                    for (unsigned tj = 0; tj < tile_width; tj++) {
-                        
-                        data x;
-                        x.data = 0;
-                        x.keep_all();
-                        switch (aie_index) {
-                        case 0:
-                            s0.write(x);
-                            break;
-                        case 1:
-                            s1.write(x);
-                            break;
-                        case 2:
-                            s2.write(x);
-                            break;
-                        case 3:
-                            s3.write(x);
-                            break;
-                        case 4:
-                            s4.write(x);
-                            break;
-                        case 5:
-                            s5.write(x);
-                            break;
-                        case 6:
-                            s6.write(x);
-                            break;
-                        default:
-                            s0.write(x);
                         }
                     }
                 }

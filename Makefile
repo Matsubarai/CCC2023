@@ -36,7 +36,7 @@ BUILD_DIR = build.$(TARGET)
 OUTPUT_DIR = $(shell readlink -f ./$(BUILD_DIR))
 
 AIE_SRCS = $(AIE_DIR)/$(BUILD_DIR)/libadf.a
-PL_KERNELS = s2mm sticker_mm2mm tile_mm2mm
+PL_KERNELS = sticker_mm2mm tile_mm2mm
 XO_SRCS = $(addprefix $(PL_DIR)/$(BUILD_DIR)/, $(addsuffix .xo, $(PL_KERNELS)))
 HOST_APP = $(HOST_DIR)/filter2d.exe
 

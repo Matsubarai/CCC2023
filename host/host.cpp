@@ -39,14 +39,6 @@ int main(int argc, char** argv) {
     auto tile_mm2mm_1    = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
     auto sticker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
 
-    auto s2mm_0 = xrt::kernel(device, uuid, "s2mm:{s2mm1}");
-    auto s2mm_1 = xrt::kernel(device, uuid, "s2mm:{s2mm2}");
-    auto s2mm_2 = xrt::kernel(device, uuid, "s2mm:{s2mm3}");
-    auto s2mm_3 = xrt::kernel(device, uuid, "s2mm:{s2mm4}");
-    auto s2mm_4 = xrt::kernel(device, uuid, "s2mm:{s2mm5}");
-    auto s2mm_5 = xrt::kernel(device, uuid, "s2mm:{s2mm6}");
-    auto s2mm_6 = xrt::kernel(device, uuid, "s2mm:{s2mm7}");
-
     /////////////////////////////////////////////////
     // Allocating Buffer in Global Memory
     /////////////////////////////////////////////////
@@ -79,18 +71,9 @@ int main(int argc, char** argv) {
     // 后续：img_in_buffer ---(PL:tile_mm2mm_1)---> aie kernel
     auto img_in_buffer = xrt::bo(device, img_size_in_bytes, tile_mm2mm_1.group_id(0));
 
-    // 用于存储 aie kernel 的计算结果
-    // aie kernel ---(PL:s2mm_)---> out_buffer_
-    auto out_buffer_0 = xrt::bo(device, tile_size_in_bytes, s2mm_0.group_id(0));
-    auto out_buffer_1 = xrt::bo(device, tile_size_in_bytes, s2mm_1.group_id(0));
-    auto out_buffer_2 = xrt::bo(device, tile_size_in_bytes, s2mm_2.group_id(0));
-    auto out_buffer_3 = xrt::bo(device, tile_size_in_bytes, s2mm_3.group_id(0));
-    auto out_buffer_4 = xrt::bo(device, tile_size_in_bytes, s2mm_4.group_id(0));
-    auto out_buffer_5 = xrt::bo(device, tile_size_in_bytes, s2mm_5.group_id(0));
-    auto out_buffer_6 = xrt::bo(device, tile_size_in_bytes, s2mm_6.group_id(0));
     
     // 用来存储最后的计算结果
-    // out_buffer_ ---(PL:sticker_mm2mm_1)---> img_out_buffer
+    // aie kernel ---(PL:sticker_mm2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
     auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(7));
 
@@ -132,43 +115,23 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     std::cout << "Run the PL kernels" << std::endl;
 
-    std::cout << "Run the s2mm PL" << std::endl;
-    auto run_s2mm_0 = s2mm_0(out_buffer_0, nullptr, tile_size_in_bytes);
-    auto run_s2mm_1 = s2mm_1(out_buffer_1, nullptr, tile_size_in_bytes);
-    auto run_s2mm_2 = s2mm_2(out_buffer_2, nullptr, tile_size_in_bytes);
-    auto run_s2mm_3 = s2mm_3(out_buffer_3, nullptr, tile_size_in_bytes);
-    auto run_s2mm_4 = s2mm_4(out_buffer_4, nullptr, tile_size_in_bytes);
-    auto run_s2mm_5 = s2mm_5(out_buffer_5, nullptr, tile_size_in_bytes);
-    auto run_s2mm_6 = s2mm_6(out_buffer_6, nullptr, tile_size_in_bytes);
+    std::cout << "Run the sticker PL" << std::endl;
+    auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
+	    nullptr, nullptr, nullptr, nullptr, nullptr,
+	    nullptr, nullptr, 
+	    img_out_buffer);
 
     std::cout << "Run the tile PL" << std::endl;
     auto run_tile_mm2mm_1 = tile_mm2mm_1(
 	    img_in_buffer, 
 	    nullptr, nullptr, nullptr, nullptr, nullptr,
 	    nullptr, nullptr);
+
     run_tile_mm2mm_1.wait();
+    std::cout << "tile_mm2mm_1 completed" << std::endl;
 
-    run_s2mm_0.wait();
-    std::cout << "s2mm_0 completed" << std::endl;
-    run_s2mm_1.wait();
-    std::cout << "s2mm_1 completed" << std::endl;
-    run_s2mm_2.wait();
-    std::cout << "s2mm_2 completed" << std::endl;
-    run_s2mm_3.wait();
-    std::cout << "s2mm_3 completed" << std::endl;
-    run_s2mm_4.wait();
-    std::cout << "s2mm_4 completed" << std::endl;
-    run_s2mm_5.wait();
-    std::cout << "s2mm_5 completed" << std::endl;
-    run_s2mm_6.wait();
-    std::cout << "s2mm_6 completed" << std::endl;
-
-    std::cout << "Run the sticker PL" << std::endl;
-    auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
-	    out_buffer_0, out_buffer_1, out_buffer_2, out_buffer_3, out_buffer_4,
-	    out_buffer_5, out_buffer_6, 
-	    img_out_buffer);
     run_sticker_mm2mm_1.wait();
+    std::cout << "sticker_mm2mm_1 completed" << std::endl;
 
     /////////////////////////////////////////////////
     // Synchronize the output buffer data from the device
