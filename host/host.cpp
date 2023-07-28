@@ -36,8 +36,8 @@ int main(int argc, char** argv) {
     // Get reference to the kernels
     /////////////////////////////////////////////////
     std::cout << "Get references to compute units" << std::endl;
-    auto tile_mm2mm_1    = xrt::kernel(device, uuid, "tile_mm2mm:{tile_mm2mm1}");
-    auto sticker_mm2mm_1 = xrt::kernel(device, uuid, "sticker_mm2mm:{sticker_mm2mm1}");
+    auto tile_mm2s_1    = xrt::kernel(device, uuid, "tile_mm2s:{tile_mm2s1}");
+    auto sticker_s2mm_1 = xrt::kernel(device, uuid, "sticker_s2mm:{sticker_s2mm1}");
 
     /////////////////////////////////////////////////
     // Allocating Buffer in Global Memory
@@ -66,14 +66,14 @@ int main(int argc, char** argv) {
 
     // 用来存储所有的图片
     // host mem ------> device mem (img_in_buffer)
-    // 后续：img_in_buffer ---(PL:tile_mm2mm_1)---> aie kernel
-    auto img_in_buffer = xrt::bo(device, img_size_in_bytes, tile_mm2mm_1.group_id(0));
+    // 后续：img_in_buffer ---(PL:tile_mm2s_1)---> aie kernel
+    auto img_in_buffer = xrt::bo(device, img_size_in_bytes, tile_mm2s_1.group_id(0));
 
     
     // 用来存储最后的计算结果
-    // aie kernel ---(PL:sticker_mm2mm_1)---> img_out_buffer
+    // aie kernel ---(PL:sticker_s2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
-    auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(7));
+    auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_s2mm_1.group_id(7));
 
     /////////////////////////////////////////////////
     // Read data from file 
@@ -114,22 +114,22 @@ int main(int argc, char** argv) {
     std::cout << "Run the PL kernels" << std::endl;
 
     std::cout << "Run the sticker PL" << std::endl;
-    auto run_sticker_mm2mm_1 = sticker_mm2mm_1(
+    auto run_sticker_s2mm_1 = sticker_s2mm_1(
 	    nullptr, nullptr, nullptr, nullptr, nullptr,
 	    nullptr, nullptr, 
 	    img_out_buffer);
 
     std::cout << "Run the tile PL" << std::endl;
-    auto run_tile_mm2mm_1 = tile_mm2mm_1(
+    auto run_tile_mm2s_1 = tile_mm2s_1(
 	    img_in_buffer, 
 	    nullptr, nullptr, nullptr, nullptr, nullptr,
 	    nullptr, nullptr);
 
-    run_tile_mm2mm_1.wait();
-    std::cout << "tile_mm2mm_1 completed" << std::endl;
+    run_tile_mm2s_1.wait();
+    std::cout << "tile_mm2s_1 completed" << std::endl;
 
-    run_sticker_mm2mm_1.wait();
-    std::cout << "sticker_mm2mm_1 completed" << std::endl;
+    run_sticker_s2mm_1.wait();
+    std::cout << "sticker_s2mm_1 completed" << std::endl;
 
     /////////////////////////////////////////////////
     // Synchronize the output buffer data from the device

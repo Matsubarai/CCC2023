@@ -5,7 +5,7 @@
 #include "config.h"
 
 // 对一张图片的指定位置进行 tile 操作
-void tile_mm2mm(ap_int<DWIDTH> *mem_in, 
+void tile_mm2s(ap_int<DWIDTH> *mem_in, 
 hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, hls::stream<data> &s3, 
 hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
 

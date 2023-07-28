@@ -5,7 +5,7 @@
 #include "config.h"
 
 // 将当前横纵坐标对应的 tile 拼接到图片中
-void sticker_mm2mm(hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, 
+void sticker_s2mm(hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, 
 hls::stream<data> &s3, hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6,
 ap_int<DWIDTH> *mem_out) {
 
