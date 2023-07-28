@@ -40,20 +40,28 @@ ap_int<DWIDTH> *mem_out) {
                         switch(aie_index) {
                             case 0:
                                 x = s0.read();
+                                break;
                             case 1:
                                 x = s1.read();
+                                break;
                             case 2:
                                 x = s2.read();
+                                break;
                             case 3:
                                 x = s3.read();
+                                break;
                             case 4:
                                 x = s4.read();
+                                break;
                             case 5:
                                 x = s5.read();
+                                break;
                             case 6:
                                 x = s6.read();
+                                break;
                             default:
                                 x = s0.read();
+                                break;
                         }
 
                         mem_out_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
