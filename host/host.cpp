@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
     auto out_buffer_6 = xrt::bo(device, tile_size_in_bytes, s2mm_6.group_id(0));
     
     // 用来存储最后的计算结果
-    // tiled_out_buffer_ ---(PL:sticker_mm2mm_1)---> img_out_buffer
+    // out_buffer_ ---(PL:sticker_mm2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
     auto img_out_buffer = xrt::bo(device, img_size_in_bytes, sticker_mm2mm_1.group_id(7));
 
