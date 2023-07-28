@@ -6,16 +6,16 @@
 
 // 对一张图片的指定位置进行 tile 操作
 void tile_mm2mm(ap_int<DWIDTH> *mem_in, 
-ap_int<DWIDTH> *mem_out1, ap_int<DWIDTH> *mem_out2, ap_int<DWIDTH> *mem_out3, ap_int<DWIDTH> *mem_out4, 
-ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
+hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, hls::stream<data> &s3, 
+hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
 
 
     // 每张图片的 tile 个数（width 和 height 两个维度）
     unsigned tile_width_number  = ceil((float)(img_width  - tile_width)  / (tile_width  - 2)) + 1;
     unsigned tile_height_number = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
 
-    // 用作每个 mem_out 的索引
-    unsigned count[AIE_KERNEL_NUMBER] = {0};
+    // // 用作每个 mem_out 的索引
+    // unsigned count[AIE_KERNEL_NUMBER] = {0};
     // 用作 mem_in 的索引
     int mem_in_index;
 
@@ -53,55 +53,37 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
                         else
                             mem_in_index = -1;
 
+                        data x;
+                        if (mem_in_index == -1)
+                            x.data = 0;
+                        else 
+                            x.data = mem_in[mem_in_index];
+                        x.keep_all();
                         // 将分块好的数据存入对应 aie 所读取的 mem 区域
                         switch(aie_index) {
                             case 0:
-                                if (mem_in_index == -1)
-                                    mem_out1[count[aie_index]++] = 0;
-                                else 
-                                    mem_out1[count[aie_index]++] = mem_in[mem_in_index];
+                                s0.write(x);
                                 break;
                             case 1:
-                                if (mem_in_index == -1)
-                                    mem_out2[count[aie_index]++] = 0;
-                                else 
-                                    mem_out2[count[aie_index]++] = mem_in[mem_in_index];
+                                s1.write(x);
                                 break;
                             case 2:
-                                if (mem_in_index == -1)
-                                    mem_out3[count[aie_index]++] = 0;
-                                else 
-                                    mem_out3[count[aie_index]++] = mem_in[mem_in_index];
+                                s2.write(x);
                                 break;
                             case 3:
-                                if (mem_in_index == -1)
-                                    mem_out4[count[aie_index]++] = 0;
-                                else 
-                                    mem_out4[count[aie_index]++] = mem_in[mem_in_index];
+                                s3.write(x);
                                 break;
                             case 4:
-                                if (mem_in_index == -1)
-                                    mem_out5[count[aie_index]++] = 0;
-                                else 
-                                    mem_out5[count[aie_index]++] = mem_in[mem_in_index];
+                                s4.write(x);
                                 break;
                             case 5:
-                                if (mem_in_index == -1)
-                                    mem_out6[count[aie_index]++] = 0;
-                                else 
-                                    mem_out6[count[aie_index]++] = mem_in[mem_in_index];
+                                s5.write(x);
                                 break;
                             case 6:
-                                if (mem_in_index == -1)
-                                    mem_out7[count[aie_index]++] = 0;
-                                else 
-                                    mem_out7[count[aie_index]++] = mem_in[mem_in_index];
+                                s6.write(x);
                                 break;
                             default:
-                                if (mem_in_index == -1)
-                                    mem_out1[count[aie_index]++] = 0;
-                                else 
-                                    mem_out1[count[aie_index]++] = mem_in[mem_in_index];
+                                s0.write(x);
                         }
                     }
                 }
@@ -117,30 +99,34 @@ ap_int<DWIDTH> *mem_out5, ap_int<DWIDTH> *mem_out6, ap_int<DWIDTH> *mem_out7) {
 
                 for (unsigned ti = 0; ti < tile_height; ti++) {
                     for (unsigned tj = 0; tj < tile_width; tj++) {
+                        
+                        data x;
+                        x.data = 0;
+                        x.keep_all();
                         switch (aie_index) {
                         case 0:
-                            mem_out1[count[aie_index]++] = 0;
+                            s0.write(x);
                             break;
                         case 1:
-                            mem_out2[count[aie_index]++] = 0;
+                            s1.write(x);
                             break;
                         case 2:
-                            mem_out3[count[aie_index]++] = 0;
+                            s2.write(x);
                             break;
                         case 3:
-                            mem_out4[count[aie_index]++] = 0;
+                            s3.write(x);
                             break;
                         case 4:
-                            mem_out5[count[aie_index]++] = 0;
+                            s4.write(x);
                             break;
                         case 5:
-                            mem_out6[count[aie_index]++] = 0;
+                            s5.write(x);
                             break;
                         case 6:
-                            mem_out7[count[aie_index]++] = 0;
+                            s6.write(x);
                             break;
                         default:
-                            mem_out1[count[aie_index]++] = 0;
+                            s0.write(x);
                         }
                     }
                 }
