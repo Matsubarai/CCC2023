@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     std::cout << "Read data from file" << std::endl;
     auto *img_input      = new int [img_element_number];
     auto *img_output_aie = new int [img_element_number];
-    auto *img_placeholder= new int [img_element_number];
+    // auto *img_placeholder= new int [img_element_number];
     auto *img_output_ref = new int [img_element_number];
 
     for (unsigned int i = 0; i < img_element_number; i++) {
