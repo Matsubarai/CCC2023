@@ -4,8 +4,6 @@
 #include <math.h>
 #include "config.h"
 
-void tile_aie_kernel();
-
 // 对一张图片的指定位置进行 tile 操作
 void tile_mm2s(ap_int<BUS_DWIDTH> *mem_in, 
 hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, hls::stream<data> &s3, 
