@@ -83,60 +83,66 @@ int main(int argc, char** argv) {
     	cal_ref(img_input + img_index * img_width * img_height, img_width, img_height, kernel_coeff, img_output_ref + img_index * img_width * img_height);
     }
 
-    auto start = std::chrono::steady_clock::now();
-    
     /////////////////////////////////////////////////
     // Write input data to device global memory
     /////////////////////////////////////////////////
     std::cout << "Write input data to device global memory" << std::endl;
+    auto start = std::chrono::steady_clock::now();
     img_in_buffer.write(img_input);
 
     /////////////////////////////////////////////////
     // Synchronize input buffers data to device global memory
     /////////////////////////////////////////////////
-    std::cout << "Synchronize input buffers data to device global memory" << std::endl;
     img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-
     auto end = std::chrono::steady_clock::now();
-
-    std::cout << "Elapsed time in nanoseconds: "
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "Transfer data from host to device in nanoseconds: "
         << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()
         << " ns" << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
 
     /////////////////////////////////////////////////
     // Execute the PL compute units
     /////////////////////////////////////////////////
     std::cout << "Run the PL kernels" << std::endl;
 
-    std::cout << "Run the sticker PL" << std::endl;
+    start = std::chrono::steady_clock::now();
     auto run_sticker_s2mm_1 = sticker_s2mm_1(
 	    nullptr, nullptr, nullptr, nullptr, nullptr,
 	    nullptr, nullptr, 
 	    img_out_buffer);
 
-    std::cout << "Run the tile PL" << std::endl;
     auto run_tile_mm2s_1 = tile_mm2s_1(
 	    img_in_buffer, 
 	    nullptr, nullptr, nullptr, nullptr, nullptr,
 	    nullptr, nullptr);
 
     run_tile_mm2s_1.wait();
-    std::cout << "tile_mm2s_1 completed" << std::endl;
-
     run_sticker_s2mm_1.wait();
-    std::cout << "sticker_s2mm_1 completed" << std::endl;
+    end = std::chrono::steady_clock::now();
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "PL & aie kernels complete in nanoseconds: "
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()
+        << " ns" << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
 
     /////////////////////////////////////////////////
     // Synchronize the output buffer data from the device
     ///////////////////////////////////////////////
     std::cout << "Synchronize output buffers data to device global memory" << std::endl;
+    start = std::chrono::steady_clock::now();
     img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // /////////////////////////////////////////////////
     // // Read output buffer data to local buffer
     // /////////////////////////////////////////////////
-    std::cout << "Read output data from device global memory" << std::endl;
     img_out_buffer.read(img_output_aie);
+    auto end = std::chrono::steady_clock::now();
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "Transfer data from device to host in nanoseconds: "
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()
+        << " ns" << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
 
     /////////////////////////////////////////////////
     // Correctness verification
