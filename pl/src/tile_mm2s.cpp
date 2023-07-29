@@ -44,8 +44,8 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                     for (unsigned th = 0; th < tile_height; th++) {
                         for (unsigned tw = 0; tw < tile_width; tw++) {
                             
-                            mem_in_index_uid = (th * tile_width + tw) % DATA_NUM;
-                            mem_in_index_gid = (th * tile_width + tw) / DATA_NUM;
+                            mem_in_index_uid = (th * img_width + tw) % DATA_NUM;
+                            mem_in_index_gid = (th * img_width + tw) / DATA_NUM;
 
                             if (tw == 0 || mem_in_index_uid == 0) {
                                 // mem_in_tmp = *((ap_int<BUS_DWIDTH>*)(base + th * img_width + tw));
