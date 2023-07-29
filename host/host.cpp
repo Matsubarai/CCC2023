@@ -45,8 +45,6 @@ int main(int argc, char** argv) {
     unsigned img_width   = 720;
     unsigned img_height  = 480;
     unsigned img_number  = 2;
-    unsigned tile_width  = 64;
-    unsigned tile_height = 32;
     
     // 所有 img 中的元素个数
     unsigned img_element_number  = img_width * img_height * img_number;
