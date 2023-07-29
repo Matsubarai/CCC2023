@@ -60,13 +60,13 @@ int main(int argc, char** argv) {
 
     // 每张图片的 tile 个数（width 和 height 两个维度）
     unsigned tile_width_number   = ceil((float)(img_width  - tile_width)  / (tile_width  - 2)) + 1;
-	unsigned tile_height_number  = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
+    unsigned tile_height_number  = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
 
     // 每个 aie kernel 需要循环计算的总次数
     unsigned iteration = ceil((float)(tile_width_number * tile_height_number) / AIE_KERNEL_NUMBER) * img_number;
     
     // 所有输入图片的拼接后的大小
-    size_t img_buffer_size  = BUS_DWIDTH * (img_element_number / DATA_NUM);
+    size_t img_buffer_size  = sizeof(int) * img_element_number;
 
     // 用来存储所有的图片
     // host mem ------> device mem (img_in_buffer)
