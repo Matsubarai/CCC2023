@@ -48,7 +48,7 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                             mem_in_index_uid = (th * tile_width + tw) % DATA_NUM;
 
                             if (mem_in_index_uid == 0) {
-                                mem_in_tmp = ((ap_int<BUS_DWIDTH>*)((ap_int<DWIDTH>*)base + th * img_width + tw))[0];
+                                mem_in_tmp = *((ap_int<BUS_DWIDTH>*)((ap_int<DWIDTH>*)base + th * img_width + tw));
                             }
 
                             mem_tmp = mem_in_tmp.range((mem_in_index_uid + 1) * DWIDTH - 1, mem_in_index_uid * DWIDTH);
