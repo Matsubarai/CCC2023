@@ -9,15 +9,10 @@
 #include <random>
 #include <typeinfo>
 #include <math.h>
-
 #include <xrt.h>
 #include <experimental/xrt_kernel.h>
 
 #define AIE_KERNEL_NUMBER 7
-#define BUS_DWIDTH 256
-#define DWIDTH 32
-#define DATA_NUM (BUS_DWIDTH / DWIDTH)
-
 
 void cal_ref(int* input_buffer, unsigned width, unsigned height, int* kernel_coeff, int* ref_buffer);
 
@@ -55,15 +50,6 @@ int main(int argc, char** argv) {
     
     // 所有 img 中的元素个数
     unsigned img_element_number  = img_width * img_height * img_number;
-    // 单个 tile 中的元素个数
-    unsigned tile_element_number = tile_width * tile_height;
-
-    // 每张图片的 tile 个数（width 和 height 两个维度）
-    unsigned tile_width_number   = ceil((float)(img_width  - tile_width)  / (tile_width  - 2)) + 1;
-    unsigned tile_height_number  = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
-
-    // 每个 aie kernel 需要循环计算的总次数
-    unsigned iteration = ceil((float)(tile_width_number * tile_height_number) / AIE_KERNEL_NUMBER) * img_number;
     
     // 所有输入图片的拼接后的大小
     size_t img_buffer_size  = sizeof(int) * img_element_number;
