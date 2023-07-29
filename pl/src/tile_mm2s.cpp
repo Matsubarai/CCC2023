@@ -36,7 +36,8 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                 // 当前 tile 相对于第一个元素的偏移
                 unsigned offset_width  = tile_index_width * (tile_width - 2);
                 unsigned offset_height = tile_index_height * (tile_height - 2);
-                ap_int<DWIDTH>* base = (ap_int<DWIDTH>*)mem_in + offset_img + offset_height * img_width + offset_width;
+                // ap_int<DWIDTH>* base = (ap_int<DWIDTH>*)mem_in + offset_img + offset_height * img_width + offset_width;
+                unsigned base = offset_img + offset_height * img_width + offset_width;
 
                 if (tile_index_height >= 0 && tile_index_height < tile_height_number - 1 
                         && tile_index_width >= 0 && tile_index_width < tile_width_number - 1) {
@@ -44,9 +45,11 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
                         for (unsigned tw = 0; tw < tile_width; tw++) {
                             
                             mem_in_index_uid = (th * tile_width + tw) % DATA_NUM;
+                            mem_in_index_gid = (th * tile_width + tw) / DATA_NUM;
 
-                            if (mem_in_index_uid == 0) {
-                                mem_in_tmp = *((ap_int<BUS_DWIDTH>*)(base + th * img_width + tw));
+                            if (tw == 0 || mem_in_index_uid == 0) {
+                                // mem_in_tmp = *((ap_int<BUS_DWIDTH>*)(base + th * img_width + tw));
+                                mem_in_tmp = mem_in[mem_in_index_gid];
                             }
 
                             mem_tmp = mem_in_tmp.range((mem_in_index_uid + 1) * DWIDTH - 1, mem_in_index_uid * DWIDTH);
