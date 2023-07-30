@@ -17,8 +17,8 @@
 void cal_ref(int* input_buffer, unsigned width, unsigned height, int* kernel_coeff, int* ref_buffer);
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
-        std::cout << "Usage: " << argv[0] << " <XCLBIN File>" << std::endl;
+    if (argc < 3) {
+        std::cout << "Usage: " << argv[0] << " <XCLBIN File>" << " <IMAGE NUMBER>" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -44,15 +44,15 @@ int main(int argc, char** argv) {
     std::cout << "Allocate Buffer in Global Memory" << std::endl;
     unsigned img_width   = 3840;
     unsigned img_height  = 2160;
-    unsigned img_number  = 1;
+    unsigned img_number  = strtoul(argv[2], NULL, 0);
     
-    // 所有 img 中的元素个数
-    unsigned img_element_number  = img_width * img_height * img_number;
+    // 一张 img 中的元素个数
+    unsigned img_element_number  = img_width * img_height;
     
-    // 所有输入图片的拼接后的大小
+    // 一张输入图片的拼接后的大小
     size_t img_buffer_size  = sizeof(int) * img_element_number;
 
-    // 用来存储所有的图片
+    // 用来存储一张图片
     // host mem ------> device mem (img_in_buffer)
     // 后续：img_in_buffer ---(PL:tile_mm2s_1)---> aie kernel
     auto img_in_buffer = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(0));
@@ -63,13 +63,21 @@ int main(int argc, char** argv) {
     auto img_out_buffer = xrt::bo(device, img_buffer_size, sticker_s2mm_1.group_id(7));
 
     /////////////////////////////////////////////////
-    // Read data from file 
+    // Create buffer for running time
     /////////////////////////////////////////////////
-    std::cout << "Read data from file" << std::endl;
+    auto *img_trans_to_time     = new long [img_number];
+    auto *img_trans_from_time   = new long [img_number];
+    auto *img_execute_time      = new long [img_number];
+	
+    /////////////////////////////////////////////////
+    // Generating data
+    /////////////////////////////////////////////////
     auto *img_input      = new int [img_element_number];
     auto *img_output_aie = new int [img_element_number];
     auto *img_output_ref = new int [img_element_number];
 
+    std::cout << "==========  START  ==========" << std::endl;
+    std::cout << "IMG " << "1/" << img_number << " : " ;
     for (unsigned int i = 0; i < img_element_number; i++) {
         img_input[i] = rand() % 100;
     }
@@ -77,16 +85,12 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     // Cal output reference
     /////////////////////////////////////////////////
-    std::cout << "Cal output reference" << std::endl;
     int kernel_coeff[16] = {64, 128, 64, 128, 256, 128, 64, 128, 64};
-    for (unsigned img_index = 0; img_index < img_number; img_index++) {
-    	cal_ref(img_input + img_index * img_width * img_height, img_width, img_height, kernel_coeff, img_output_ref + img_index * img_width * img_height);
-    }
+    cal_ref(img_input, img_width, img_height, kernel_coeff, img_output_ref);
 
     /////////////////////////////////////////////////
     // Write input data to device global memory
     /////////////////////////////////////////////////
-    std::cout << "Write input data to device global memory" << std::endl;
     auto start = std::chrono::steady_clock::now();
     img_in_buffer.write(img_input);
 
@@ -95,13 +99,11 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
     auto end = std::chrono::steady_clock::now();
-    double img_trans_to_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    img_trans_to_time[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
     /////////////////////////////////////////////////
     // Execute the PL compute units
     /////////////////////////////////////////////////
-    std::cout << "Run the PL kernels" << std::endl;
-
     start = std::chrono::steady_clock::now();
     auto run_sticker_s2mm_1 = sticker_s2mm_1(
 	    nullptr, nullptr, nullptr, nullptr, nullptr,
@@ -116,12 +118,11 @@ int main(int argc, char** argv) {
     run_tile_mm2s_1.wait();
     run_sticker_s2mm_1.wait();
     end = std::chrono::steady_clock::now();
-    double img_execute_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    img_execute_time[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
     /////////////////////////////////////////////////
     // Synchronize the output buffer data from the device
     ///////////////////////////////////////////////
-    std::cout << "Synchronize output buffers data to device global memory" << std::endl;
     start = std::chrono::steady_clock::now();
     img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
@@ -130,12 +131,11 @@ int main(int argc, char** argv) {
     // /////////////////////////////////////////////////
     img_out_buffer.read(img_output_aie);
     end = std::chrono::steady_clock::now();
-    double img_trans_from_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    img_trans_from_time[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
     /////////////////////////////////////////////////
     // Correctness verification
     /////////////////////////////////////////////////
-    std::cout << "Correctness verification" << std::endl;
     unsigned erro = 0;
     for (unsigned i = 0; i < img_element_number; i++) {
         if (abs(img_output_aie[i] - img_output_ref[i]) > 1e-3) {
@@ -144,16 +144,102 @@ int main(int argc, char** argv) {
     }
     std::cout << "Erro time: " << erro << std::endl;
 
+    for(unsigned id = 1; id < img_number; id++){
+
+	    std::cout << "IMG " << (id+1) << "/" << img_number << " : " ;
+	    for (unsigned int i = 0; i < img_element_number; i++) {
+	        img_input[i] = rand() % 100;
+	    }
+	
+	    /////////////////////////////////////////////////
+	    // Cal output reference
+	    /////////////////////////////////////////////////
+        cal_ref(img_input, img_width, img_height, kernel_coeff, img_output_ref);
+	
+	    /////////////////////////////////////////////////
+	    // Write input data to device global memory
+	    /////////////////////////////////////////////////
+	    auto start = std::chrono::steady_clock::now();
+    	img_in_buffer.write(img_input);
+
+        /////////////////////////////////////////////////
+        // Synchronize input buffers data to device global memory
+        /////////////////////////////////////////////////
+    	img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+	    auto end = std::chrono::steady_clock::now();
+        img_trans_to_time[id] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+	
+	    /////////////////////////////////////////////////
+	    // Execute the PL compute units
+	    /////////////////////////////////////////////////
+	    start = std::chrono::steady_clock::now();
+
+	    run_sticker_s2mm_1.start();
+	    run_tile_mm2s_1.start();
+	
+	    run_tile_mm2s_1.wait();
+	    run_sticker_s2mm_1.wait();
+	    end = std::chrono::steady_clock::now();
+        img_execute_time[id] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+	
+	    /////////////////////////////////////////////////
+	    // Synchronize the output buffer data from the device
+	    ///////////////////////////////////////////////
+	    start = std::chrono::steady_clock::now();
+	    img_out_buffer.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+	
+	    // /////////////////////////////////////////////////
+	    // // Read output buffer data to local buffer
+	    // /////////////////////////////////////////////////
+	    img_out_buffer.read(img_output_aie);
+	    end = std::chrono::steady_clock::now();
+        img_trans_from_time[id] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+	
+	    /////////////////////////////////////////////////
+	    // Correctness verification
+	    /////////////////////////////////////////////////
+	    unsigned erro = 0;
+	    for (unsigned i = 0; i < img_element_number; i++) {
+	        if (abs(img_output_aie[i] - img_output_ref[i]) > 1e-3) {
+	            erro++;
+	        }
+	    }
+	    std::cout << "Erro time: " << erro << std::endl;
+    }
+    std::cout << "==========  END  ==========" << std::endl;
+	/////////////////////////////////////////////////
+	// Process run time data
+	/////////////////////////////////////////////////
+    double average_trans_to_time = 0;
+    double average_trans_from_time = 0;
+    double average_execute_time = 0;
+    std::sort(img_trans_to_time, img_trans_to_time + img_number);
+    std::sort(img_trans_from_time, img_trans_from_time + img_number);
+    std::sort(img_execute_time, img_execute_time + img_number);
+
+    for (unsigned i = 1; i < img_number - 1; i++) {
+        average_execute_time    += img_execute_time[i];
+        average_trans_to_time   += img_trans_to_time[i];
+        average_trans_from_time += img_trans_from_time[i];
+    }
+    average_execute_time    /= (img_number - 2);
+    average_trans_to_time   /= (img_number - 2);
+    average_trans_from_time /= (img_number - 2);
+
     std::cout << "********************************************************************************" << std::endl << std::endl;
     std::cout << std::setprecision(6) << std::setiosflags(std::ios::fixed);
-    std::cout << "\tTotal transefer time from host TO   device: " << (img_trans_to_time / 1000000) << "ms" << std::endl;
-    std::cout << "\tTotal transefer time from host FROM device: " << (img_trans_from_time / 1000000) << "ms" << std::endl;
-    std::cout << "\tTotal execution time                      : " << (img_execute_time / 1000000) << "ms" << std::endl << std::endl;
+    std::cout << "\tAverage transefer time from host TO   device: " << (average_trans_to_time / 1000000) << "ms" << std::endl;
+    std::cout << "\tAverage transefer time from host FROM device: " << (average_trans_from_time / 1000000) << "ms" << std::endl;
+    std::cout << "\tAverage execution time                      : " << (average_execute_time / 1000000) << "ms" << std::endl << std::endl;
     std::cout << "********************************************************************************" << std::endl << std::endl;
+
 
     delete [] img_input;
     delete [] img_output_aie;
     delete [] img_output_ref;
+    delete [] img_trans_to_time;
+    delete [] img_trans_from_time;
+    delete [] img_execute_time;
 
     return 0;
 }
