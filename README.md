@@ -1,5 +1,13 @@
 # 最新版本参考 report.pdf
 
+# 复现步骤：
+```
+# Build project
+make 
+# Run (make sure you have allocated vck5000 board)
+make run <IMG_NUMBER>
+```
+
 ## 选题
 Filter2D
 
@@ -73,14 +81,6 @@ AIE会对每个分块数据进行 padding 后再卷积，因此AIE计算所得�
 ![图14](https://github.com/DongDongZZD/CCC2023/blob/main/readme_image/14.png "图14 32个 kernel 对应的 graph 示意图")
 
 ## 系统测试
-
-复现步骤：
-```
-# Build project
-make all
-# Run AIE Emulation
-make aieemu
-```
 
 输入图片张数：2
 
