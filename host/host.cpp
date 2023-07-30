@@ -42,9 +42,9 @@ int main(int argc, char** argv) {
     // Allocating Buffer in Global Memory
     /////////////////////////////////////////////////
     std::cout << "Allocate Buffer in Global Memory" << std::endl;
-    unsigned img_width   = 720;
-    unsigned img_height  = 480;
-    unsigned img_number  = 2;
+    unsigned img_width   = 3840;
+    unsigned img_height  = 2160;
+    unsigned img_number  = 1;
     
     // 所有 img 中的元素个数
     unsigned img_element_number  = img_width * img_height * img_number;
