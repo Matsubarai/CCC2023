@@ -56,8 +56,8 @@ int main(int argc, char** argv) {
     // host mem ------> device mem (img_in_buffer)
     // 后续：img_in_buffer ---(PL:tile_mm2s_1)---> aie kernel
     auto img_in_buffer_0 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(0));
-    auto img_in_buffer_1 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(1));
-    auto img_in_buffer_2 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(2));
+    auto img_in_buffer_1 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(2));
+    auto img_in_buffer_2 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(4));
     
     // 用来存储最后的计算结果
     // aie kernel ---(PL:sticker_s2mm_1)---> img_out_buffer
@@ -119,7 +119,9 @@ int main(int argc, char** argv) {
 	    img_out_buffer);
 
     auto run_tile_mm2s_1 = tile_mm2s_1(
-	    img_in_buffer_0, img_in_buffer_1, img_in_buffer_2,
+	    img_in_buffer_0, img_in_buffer_0, 
+	    img_in_buffer_1, img_in_buffer_1,
+	    img_in_buffer_2, img_in_buffer_2,
 	    nullptr, nullptr, nullptr,
     	    nullptr, nullptr, nullptr,
 	    nullptr, nullptr, nullptr);
