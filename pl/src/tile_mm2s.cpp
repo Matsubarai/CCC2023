@@ -4,6 +4,8 @@
 #include <math.h>
 #include "config.h"
 
+void transfer_mm2s(ap_int<BUS_DWIDTH>* mem_in, hls::stream<data> &s, unsigned gid, unsigned uid, unsigned tile_width_number, unsigned tile_height_number);
+
 // 对一张图片的指定位置进行 tile 操作
 void tile_mm2s(ap_int<BUS_DWIDTH> *mem_in, 
 hls::stream<data> &s0, hls::stream<data> &s1, hls::stream<data> &s2, hls::stream<data> &s3, 
@@ -12,138 +14,85 @@ hls::stream<data> &s4, hls::stream<data> &s5, hls::stream<data> &s6) {
     // 每张图片的 tile 个数（width 和 height 两个维度）
     unsigned tile_width_number  = ceil((float)(img_width  - tile_width)  / (tile_width  - 2)) + 1;
     unsigned tile_height_number = ceil((float)(img_height - tile_height) / (tile_height - 2)) + 1;
+    unsigned tile_loop_group    = ceil((float)(tile_width_number * tile_height_number) / AIE_KERNEL_NUMBER);
 
-    // 用作 mem_in 的索引
-    int mem_in_index;
-    unsigned mem_in_index_gid;
-    unsigned mem_in_index_uid;
+    for (unsigned gid = 0; gid < tile_loop_group; gid++) {
+
+        transfer_mm2s(mem_in, s0, gid, 0,  tile_width_number, tile_height_number);
+        transfer_mm2s(mem_in, s1, gid, 1,  tile_width_number, tile_height_number);
+        transfer_mm2s(mem_in, s2, gid, 2,  tile_width_number, tile_height_number);
+        transfer_mm2s(mem_in, s3, gid, 3,  tile_width_number, tile_height_number);
+        transfer_mm2s(mem_in, s4, gid, 4,  tile_width_number, tile_height_number);
+        transfer_mm2s(mem_in, s5, gid, 5,  tile_width_number, tile_height_number);
+        transfer_mm2s(mem_in, s6, gid, 6,  tile_width_number, tile_height_number);
+
+    }
+}
+
+void transfer_mm2s(ap_int<BUS_DWIDTH>* mem_in, hls::stream<data> &s, unsigned gid, unsigned uid, unsigned tile_width_number, unsigned tile_height_number) {
+
+    unsigned tile_index_width  = (gid * AIE_KERNEL_NUMBER + uid) % tile_width_number;
+    unsigned tile_index_height = (gid * AIE_KERNEL_NUMBER + uid) / tile_width_number;
+
+    unsigned offset_width  = tile_index_width  * (TILE_WIDTH  - 2);
+    unsigned offset_height = tile_index_height * (TILE_HEIGHT - 2); 
+
+    unsigned base = offset_height * IMG_WIDTH + offset_width;
+
     ap_int<BUS_DWIDTH> mem_in_tmp;
-    ap_int<DWIDTH> mem_tmp;
+    unsigned mem_in_index;
 
-    // 遍历所有图片
-    for (unsigned img_index = 0; img_index < img_number; img_index++) {
+    if (tile_index_height >= 0 && tile_index_height < tile_height_number - 1 
+            && tile_index_width >= 0 && tile_index_width < tile_width_number - 1) {
+        for (unsigned th = 0; th < TILE_HEIGHT; th++) {
+            for (unsigned tw = 0; tw < TILE_WIDTH; tw++) {
 
-        // 已经处理过的图片对应的元素个数
-        unsigned offset_img = img_index * img_width * img_height;
-
-        // 遍历所有的 tile
-        for (unsigned tile_index_height = 0; tile_index_height < tile_height_number; tile_index_height++) {
-            for (unsigned tile_index_width = 0; tile_index_width < tile_width_number; tile_index_width++) {
-
-                // 当前的 tile 应该传输给第 aie_index 个 aie kernel 计算
-                unsigned aie_index = (tile_index_height * tile_width_number + tile_index_width) % AIE_KERNEL_NUMBER;
+                #pragma HLS unroll
                 
-                // 当前 tile 相对于第一个元素的偏移
-                unsigned offset_width  = tile_index_width * (tile_width - 2);
-                unsigned offset_height = tile_index_height * (tile_height - 2);
-                // ap_int<DWIDTH>* base = (ap_int<DWIDTH>*)mem_in + offset_img + offset_height * img_width + offset_width;
-                unsigned base = offset_img + offset_height * img_width + offset_width;
+                unsigned mem_in_index_uid = (th * IMG_WIDTH + tw + base) % DATA_NUM;
+                unsigned mem_in_index_gid = (th * IMG_WIDTH + tw + base) / DATA_NUM;
 
-                if (tile_index_height >= 0 && tile_index_height < tile_height_number - 1 
-                        && tile_index_width >= 0 && tile_index_width < tile_width_number - 1) {
-                    for (unsigned th = 0; th < tile_height; th++) {
-                        for (unsigned tw = 0; tw < tile_width; tw++) {
-                            
-                            mem_in_index_uid = (th * img_width + tw + base) % DATA_NUM;
-                            mem_in_index_gid = (th * img_width + tw + base) / DATA_NUM;
-
-                            if (tw == 0 || mem_in_index_uid == 0) {
-                                // mem_in_tmp = *((ap_int<BUS_DWIDTH>*)(base + th * img_width + tw));
-                                mem_in_tmp = mem_in[mem_in_index_gid];
-                            }
-
-                            mem_tmp = mem_in_tmp.range((mem_in_index_uid + 1) * DWIDTH - 1, mem_in_index_uid * DWIDTH);
-
-                            data x;
-                            x.data = mem_tmp;
-                            x.keep_all();
-                            switch(aie_index) {
-                                case 0:
-                                    s0.write(x);
-                                    break;
-                                case 1:
-                                    s1.write(x);
-                                    break;
-                                case 2:
-                                    s2.write(x);
-                                    break;
-                                case 3:
-                                    s3.write(x);
-                                    break;
-                                case 4:
-                                    s4.write(x);
-                                    break;
-                                case 5:
-                                    s5.write(x);
-                                    break;
-                                case 6:
-                                    s6.write(x);
-                                    break;
-                                default:
-                                    s0.write(x);
-                            }
-                        }
-                    }
+                if (tw == 0 || mem_in_index_uid == 0) {
+                    mem_in_tmp = mem_in[mem_in_index_gid];
                 }
 
-                else {
-                    for (unsigned th = 0; th < tile_height; th++) {
-                        for (unsigned tw = 0; tw < tile_width; tw++) {
-                            
-                            // 遍历到图片边缘后需要进行 padding 操作 
-                            // mem_in_index == -1 表示补零
-                            if ((th + offset_height < img_height) && (tw + offset_width < img_width)) 
-                                mem_in_index = (th + offset_height) * img_width + tw + offset_width + offset_img;
-                            else if ((th + offset_height == img_height) && (tw + offset_width < img_width))
-                                mem_in_index = (img_height - 1) * img_width + tw + offset_width + offset_img;
-                            else if ((th + offset_height < img_height) && (tw + offset_width == img_width))
-                                mem_in_index = (th + offset_height) * img_width + img_width - 1 + offset_img;
-                            else if ((th + offset_height == img_height) && (tw + offset_width == img_width))
-                                mem_in_index = (img_height - 1) * img_width + img_width - 1 + offset_img;
-                            else
-                                mem_in_index = -1;
-
-                            data x;
-                            if (mem_in_index == -1)
-                                x.data = 0;
-                            else {
-                                mem_in_index_gid = mem_in_index / DATA_NUM;
-                                mem_in_index_uid = mem_in_index % DATA_NUM;
-                                mem_tmp = mem_in[mem_in_index_gid].range((mem_in_index_uid + 1) * DWIDTH - 1, mem_in_index_uid * DWIDTH);
-                                x.data = mem_tmp;
-                            }
-                                
-                            x.keep_all();
-                            // 将分块好的数据存入对应 aie 所读取的 mem 区域
-                            switch(aie_index) {
-                                case 0:
-                                    s0.write(x);
-                                    break;
-                                case 1:
-                                    s1.write(x);
-                                    break;
-                                case 2:
-                                    s2.write(x);
-                                    break;
-                                case 3:
-                                    s3.write(x);
-                                    break;
-                                case 4:
-                                    s4.write(x);
-                                    break;
-                                case 5:
-                                    s5.write(x);
-                                    break;
-                                case 6:
-                                    s6.write(x);
-                                    break;
-                                default:
-                                    s0.write(x);
-                            }
-                        }
-                    }
-                }
+                data x;
+                x.data = mem_in_tmp.range((mem_in_index_uid + 1) * DWIDTH - 1, mem_in_index_uid * DWIDTH);
+                x.keep_all();
+                s.write(x);
             }
         }
     }
+
+    else {
+        for (unsigned th = 0; th < TILE_HEIGHT; th++) {
+            for (unsigned tw = 0; tw < TILE_WIDTH; tw++) {
+                
+                // 遍历到图片边缘后需要进行 padding 操作 
+                // mem_in_index == -1 表示补零
+                if ((th + offset_height < IMG_HEIGHT) && (tw + offset_width < IMG_WIDTH)) 
+                    mem_in_index = (th + offset_height) * IMG_WIDTH + tw + offset_width;
+                else if ((th + offset_height == IMG_HEIGHT) && (tw + offset_width < IMG_WIDTH))
+                    mem_in_index = (IMG_HEIGHT - 1) * IMG_WIDTH + tw + offset_width;
+                else if ((th + offset_height < IMG_HEIGHT) && (tw + offset_width == IMG_WIDTH))
+                    mem_in_index = (th + offset_height) * IMG_WIDTH + IMG_WIDTH - 1;
+                else if ((th + offset_height == IMG_HEIGHT) && (tw + offset_width == IMG_WIDTH))
+                    mem_in_index = (IMG_HEIGHT - 1) * IMG_WIDTH + IMG_WIDTH - 1;
+                else
+                    mem_in_index = -1;
+
+                data x;
+                if (mem_in_index == -1)
+                    x.data = 0;
+                else {
+                    unsigned mem_in_index_gid = mem_in_index / DATA_NUM;
+                    unsigned mem_in_index_uid = mem_in_index % DATA_NUM;
+                    x.data = mem_in[mem_in_index_gid].range((mem_in_index_uid + 1) * DWIDTH - 1, mem_in_index_uid * DWIDTH);
+                }
+                x.keep_all();
+                s.write(x);
+            }
+        }
+    }
+
 }
