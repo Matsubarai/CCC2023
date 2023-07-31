@@ -12,7 +12,7 @@
 #include <xrt.h>
 #include <experimental/xrt_kernel.h>
 
-#define AIE_KERNEL_NUMBER 8
+#define AIE_KERNEL_NUMBER 7
 
 void cal_ref(int* input_buffer, unsigned width, unsigned height, int* kernel_coeff, int* ref_buffer);
 
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     // 用来存储最后的计算结果
     // aie kernel ---(PL:sticker_s2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
-    auto img_out_buffer = xrt::bo(device, img_buffer_size, sticker_s2mm_1.group_id(8));
+    auto img_out_buffer = xrt::bo(device, img_buffer_size, sticker_s2mm_1.group_id(7));
 
     /////////////////////////////////////////////////
     // Create buffer for running time
@@ -106,14 +106,14 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     start = std::chrono::steady_clock::now();
     auto run_sticker_s2mm_1 = sticker_s2mm_1(
-	    nullptr, nullptr, nullptr, nullptr, 
-        nullptr, nullptr, nullptr, nullptr, 
+	    nullptr, nullptr, nullptr, nullptr, nullptr,
+	    nullptr, nullptr, 
 	    img_out_buffer);
 
     auto run_tile_mm2s_1 = tile_mm2s_1(
-	    img_in_buffer, img_in_buffer,
-	    nullptr, nullptr, nullptr, nullptr,
-        nullptr, nullptr, nullptr, nullptr);
+	    img_in_buffer, 
+	    nullptr, nullptr, nullptr, nullptr, nullptr,
+	    nullptr, nullptr);
 
     run_tile_mm2s_1.wait();
     run_sticker_s2mm_1.wait();
