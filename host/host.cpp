@@ -55,12 +55,14 @@ int main(int argc, char** argv) {
     // 用来存储一张图片
     // host mem ------> device mem (img_in_buffer)
     // 后续：img_in_buffer ---(PL:tile_mm2s_1)---> aie kernel
-    auto img_in_buffer = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(0));
+    auto img_in_buffer_0 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(0));
+    auto img_in_buffer_1 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(1));
+    auto img_in_buffer_2 = xrt::bo(device, img_buffer_size, tile_mm2s_1.group_id(2));
     
     // 用来存储最后的计算结果
     // aie kernel ---(PL:sticker_s2mm_1)---> img_out_buffer
     // 后续：device mem (img_out_buffer) ------> host mem
-    auto img_out_buffer = xrt::bo(device, img_buffer_size, sticker_s2mm_1.group_id(7));
+    auto img_out_buffer = xrt::bo(device, img_buffer_size, sticker_s2mm_1.group_id(9));
 
     /////////////////////////////////////////////////
     // Create buffer for running time
@@ -92,12 +94,17 @@ int main(int argc, char** argv) {
     // Write input data to device global memory
     /////////////////////////////////////////////////
     auto start = std::chrono::steady_clock::now();
-    img_in_buffer.write(img_input);
+    img_in_buffer_0.write(img_input);
+    img_in_buffer_1.write(img_input);
+    img_in_buffer_2.write(img_input);
+	
 
     /////////////////////////////////////////////////
     // Synchronize input buffers data to device global memory
     /////////////////////////////////////////////////
-    img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    img_in_buffer_0.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    img_in_buffer_1.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    img_in_buffer_2.sync(XCL_BO_SYNC_BO_TO_DEVICE);
     auto end = std::chrono::steady_clock::now();
     img_trans_to_time[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
@@ -106,14 +113,16 @@ int main(int argc, char** argv) {
     /////////////////////////////////////////////////
     start = std::chrono::steady_clock::now();
     auto run_sticker_s2mm_1 = sticker_s2mm_1(
-	    nullptr, nullptr, nullptr, nullptr, nullptr,
-	    nullptr, nullptr, 
+	    nullptr, nullptr, nullptr,
+	    nullptr, nullptr, nullptr,
+	    nullptr, nullptr, nullptr,
 	    img_out_buffer);
 
     auto run_tile_mm2s_1 = tile_mm2s_1(
-	    img_in_buffer, 
-	    nullptr, nullptr, nullptr, nullptr, nullptr,
-	    nullptr, nullptr);
+	    img_in_buffer_0, img_in_buffer_1, img_in_buffer_2,
+	    nullptr, nullptr, nullptr,
+    	    nullptr, nullptr, nullptr,
+	    nullptr, nullptr, nullptr);
 
     run_tile_mm2s_1.wait();
     run_sticker_s2mm_1.wait();
@@ -154,18 +163,22 @@ int main(int argc, char** argv) {
 	    /////////////////////////////////////////////////
 	    // Cal output reference
 	    /////////////////////////////////////////////////
-        cal_ref(img_input, img_width, img_height, kernel_coeff, img_output_ref);
+            cal_ref(img_input, img_width, img_height, kernel_coeff, img_output_ref);
 	
 	    /////////////////////////////////////////////////
 	    // Write input data to device global memory
 	    /////////////////////////////////////////////////
 	    auto start = std::chrono::steady_clock::now();
-    	img_in_buffer.write(img_input);
+    	    img_in_buffer_0.write(img_input);
+	    img_in_buffer_1.write(img_input);
+	    img_in_buffer_2.write(img_input);
 
         /////////////////////////////////////////////////
         // Synchronize input buffers data to device global memory
         /////////////////////////////////////////////////
-    	img_in_buffer.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    	img_in_buffer_0.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+	    img_in_buffer_1.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+	    img_in_buffer_2.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 	    auto end = std::chrono::steady_clock::now();
         img_trans_to_time[id] = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 	
