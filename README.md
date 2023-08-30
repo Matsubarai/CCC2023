@@ -60,7 +60,7 @@ git clone https://github.com/Matsubarai/CCC2023.git
 ./hacc_demo/env/vck5000_alloc 3
 source ./hacc_demo/env/vck5000_env
 
-# Run the executable of this project
+# Run
 cd CCC2023/source/filter2D
 make
 make run <IMG_NUM>
