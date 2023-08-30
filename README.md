@@ -38,7 +38,7 @@ Take the 'filter2D' project submitted in the 'sources' folder of this repository
 
 1. AIE simulation
 
-Execute the following code to run the simulation of AIE separately.
+   Execute the following code to run the simulation of AIE separately.
 
 ```shell
 # Compile and run the AIE simulation
