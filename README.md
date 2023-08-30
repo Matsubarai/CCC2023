@@ -11,10 +11,10 @@
 
 - Basic - Vision 3X3 filter2D on 64x64 image
 
-Create the filter2D function with 3x3 kernel on 64x64 image using AIE API or AIE Intrinsic based on personal understanding
+  Create the filter2D function with 3x3 kernel on 64x64 image using AIE API or AIE Intrinsic based on personal understanding
 
-- AIE Emulation succeeded
-- The design report submitted
+	- AIE Emulation succeeded
+	- The design report submitted
 
 - Advanced - Image Signal Processing Pipeline on HD image
 
