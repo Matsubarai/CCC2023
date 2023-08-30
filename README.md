@@ -25,7 +25,7 @@
 
 ## Performance Analyzer
 
-
+We tested the platform using randomly generated 32-bit matrix data, batching 100 images. Experimental data shows that the average processing time of a single 4K resolution data is 87ms, and the processing frame rate is 11.42fps. Among them, the delay of data transfer in and out is 24.63ms, which is close to half of the total time, indicating that the computing overhead has not affected the overall performance of the system, and the bottleneck of running the two-dimensional convolution algorithm mainly lies in memory fetching.
 
 
 ## Design Report
@@ -42,7 +42,7 @@ Execute the following code to run the simulation of AIE separately.
 
 ```shell
 # Compile and run the AIE simulation
-cd ./CCC2023/sources/fft_4k/aie
+cd ./CCC2023/sources/filter2D/aie
 make
 make aieemu
 ```
@@ -50,27 +50,25 @@ make aieemu
 2. Hardware run
 
 	 Run on the HAC NUX
-在`sources/fft_4k/execution`文件夹下存放了通过主机调用PL和AIE必要的`fft.xclbin`文件、`host.exe`文件和输入文件`DataInFFTO.txt`，以及运行完毕所产生的输出文件`DataOutFFT0.txt`。如需在VCK5000上运行，可执行以下代码。
+Under the 'sources/filter2D/execution' folder, the necessary 'fft.xclbin' file and 'host.exe' file are stored to call PL and AIE through the host. To run on the VCK5000, execute the following code.
 
 ```shell
-# 克隆hacc_demo仓库
+# Clone the repository
 git clone https://github.com/Xtra-Computing/hacc_demo.git
 
-# 获取VCK5000计算节点（根据hacc_demo存放路径修改指令）
+# Obtain VCK5000 compute nodes (modify instructions based on hacc_demo storage path)
 ./hacc_demo/env/vck5000_alloc 3
 source ./hacc_demo/env/vck5000_env
 
-# 在本项目的execution文件夹下运行可执行文件
-./CCC2023/sources/fft_4k/execution/host.exe
+# Run the executable in the execution folder of this project
+./CCC2023/sources/filter2D/execution/host.exe
 
-# 退出节点
+# Exit the node
 ./hacc_demo/env/vck5000_exit
 ```
 
-执行完毕后，可使用`sources/fft_4k/notebook`文件夹下的`.ipynb`文件可视化输出结果并进行验证。
-
 ## Repository tree
-本仓库的主要目录结构如下。
+The main directory structure of this repository is as follows
 ```
 CCC2023
 ├── sources
@@ -84,7 +82,7 @@ CCC2023
 │       └── Makefile
 │
 ├── README.md
-└── 设计报告.pdf
+└── Report.pdf
 ```
 
 ## Reference
