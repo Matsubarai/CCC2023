@@ -34,24 +34,22 @@
 
 ## Excution
 
-以本仓库`sources`文件夹下提交的`fft_4k`工程为例，可以执行AIE仿真和硬件运行。
+Take the 'filter2D' project submitted in the 'sources' folder of this repository as an example, you can perform AIE simulation and hardware run.
 
-1. AIE仿真
+1. AIE simulation
 
-执行以下代码可以单独运行AIE的仿真。
-> 注：执行`make`之前需要确认`Makefile`文件中`XPFM`路径。
+Execute the following code to run the simulation of AIE separately.
 
 ```shell
-# 编译并运行AIE仿真
+# Compile and run the AIE simulation
 cd ./CCC2023/sources/fft_4k/aie
 make
 make aieemu
 ```
 
-2. 硬件运行
+2. Hardware run
 
-	1. 在本地环境运行
-	2. 在HACC NUX运行
+	 Run on the HAC NUX
 在`sources/fft_4k/execution`文件夹下存放了通过主机调用PL和AIE必要的`fft.xclbin`文件、`host.exe`文件和输入文件`DataInFFTO.txt`，以及运行完毕所产生的输出文件`DataOutFFT0.txt`。如需在VCK5000上运行，可执行以下代码。
 
 ```shell
@@ -76,16 +74,14 @@ source ./hacc_demo/env/vck5000_env
 ```
 CCC2023
 ├── sources
-│   ├── fft_4k          4K-point FFT完整代码
-│   │   ├── aie
-│   │   ├── execution
-│   │   ├── host
-│   │   ├── hw_link
-│   │   ├── notebook
-│   │   ├── pl
-│   │   └── Makefile
-│   │
-│   └── fft_8k         8K-point FFT完整代码，目录结构同fft_4k
+│   ├── filter2D
+│       ├── aie
+│       ├── execution
+│       ├── host
+│       ├── hw_link
+│       ├── notebook
+│       ├── pl
+│       └── Makefile
 │
 ├── README.md
 └── 设计报告.pdf
