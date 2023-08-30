@@ -1,0 +1,165 @@
+<ENTRY>
+{
+ "thisFile": "/home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xclbin.package_summary",
+ "connectId": "",
+ "serverToken": "",
+ "timestamp": "0"
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_CmdStep",
+ "dateTimestamp": "Thu Jul 27 18:31:39 2023",
+ "timestampMillis": "1690453899921",
+ "buildStep": {
+  "cmdId": "bd5b3f88-dcfb-49b5-a87a-3320bdaea378",
+  "name": "v++",
+  "logFile": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/package.steps.log",
+  "commandLine": "/tools/Xilinx/Vitis/2022.2/bin/unwrapped/lnx64.o/v++  --vivado.prop \"run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\" --package -t hw --platform xilinx_vck5000_gen4x8_qdma_2_202220_1 --save-temps /home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xsa /home/forevertime/Documents/Github/CCC2023/aie/build.hw/libadf.a --temp_dir _x_temp --report_dir reports/ --package.boot_mode=ospi -o /home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xclbin ",
+  "args": [
+   "--package",
+   "-t",
+   "hw",
+   "--platform",
+   "xilinx_vck5000_gen4x8_qdma_2_202220_1",
+   "--save-temps",
+   "/home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xsa",
+   "/home/forevertime/Documents/Github/CCC2023/aie/build.hw/libadf.a",
+   "--temp_dir",
+   "_x_temp",
+   "--report_dir",
+   "reports/",
+   "--package.boot_mode=ospi",
+   "-o",
+   "/home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xclbin"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/forevertime/Documents/Github/CCC2023/build.hw"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Thu Jul 27 18:31:39 2023",
+ "timestampMillis": "1690453899921",
+ "status": {
+  "cmdId": "bd5b3f88-dcfb-49b5-a87a-3320bdaea378",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_FlowMetaData",
+ "dateTimestamp": "Thu Jul 27 18:31:42 2023",
+ "timestampMillis": "1690453902202",
+ "buildSummary": {
+  "hardwarePlatform": "xilinx_vck5000_gen4x8_qdma_2_202220_1.xpfm",
+  "hardwareDsa": "",
+  "platformDirectory": "/opt/xilinx/platforms/xilinx_vck5000_gen4x8_qdma_2_202220_1",
+  "runtime": "OpenCL",
+  "systemConfig": "Linux",
+  "flow": "BF_PACKAGE",
+  "target": "TT_HW",
+  "binaryContainer": {
+   "base": {
+    "type": "BT_UKNOWN",
+    "name": "filter2d",
+    "file": "/home/forevertime/Documents/Github/CCC2023/build.hw/filter2d.xclbin",
+    "reports": [],
+    "uuid": ""
+   },
+   "kernels": []
+  },
+  "kernels": [],
+  "toolVersion": "Vitis V++ Compiler Release 2022.2. SW Build 3671529 on 2022-10-13-17:52:11",
+  "aieInputs": {
+   "base": {
+    "type": "AI_LIBSDF",
+    "name": "libadf",
+    "file": "/home/forevertime/Documents/Github/CCC2023/aie/build.hw/libadf.a",
+    "reports": [
+     {
+      "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/int/aie.partial.aiecompile_summary",
+      "name": "",
+      "fileType": "TEXT",
+      "reportType": "TASK_LOG_SUMMARY",
+      "cmdId": ""
+     },
+     {
+      "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/int/aie_control_config.json",
+      "name": "",
+      "fileType": "JSON",
+      "reportType": "AIE_CONTROL_CONFIG",
+      "cmdId": ""
+     },
+     {
+      "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/int/aie.router.soln.json",
+      "name": "",
+      "fileType": "JSON",
+      "reportType": "AIE_ROUTER_SOLUTION",
+      "cmdId": ""
+     },
+     {
+      "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/int/aie.mapped.json",
+      "name": "",
+      "fileType": "JSON",
+      "reportType": "AIE_GRAPH_MAPPED",
+      "cmdId": ""
+     },
+     {
+      "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/package/int/aie.compiler.report.json",
+      "name": "",
+      "fileType": "JSON",
+      "reportType": "AIE_COMPILER_REPORT",
+      "cmdId": ""
+     }
+    ],
+    "uuid": ""
+   },
+   "sources": [],
+   "type": "AI_UKNOWN"
+  }
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Thu Jul 27 18:31:43 2023",
+ "timestampMillis": "1690453903454",
+ "status": {
+  "cmdId": "bd5b3f88-dcfb-49b5-a87a-3320bdaea378",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Thu Jul 27 18:31:43 2023",
+ "timestampMillis": "1690453903489",
+ "report": {
+  "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/reports/package/v++_package_filter2d_guidance.html",
+  "name": "",
+  "fileType": "HTML",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Thu Jul 27 18:31:43 2023",
+ "timestampMillis": "1690453903489",
+ "report": {
+  "path": "/home/forevertime/Documents/Github/CCC2023/build.hw/_x_temp/v++_package_filter2d_guidance.pb3",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
